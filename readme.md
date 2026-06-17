@@ -1,0 +1,1 @@
+# Drago Project Pages Static
