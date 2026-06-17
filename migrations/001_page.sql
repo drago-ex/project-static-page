@@ -1,7 +1,7 @@
 --
 --  Static page
 -- ------------
-CREATE TABLE page (
+CREATE TABLE static_page (
   id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   slug VARCHAR(255) NOT NULL,
   title VARCHAR(255) NOT NULL,
