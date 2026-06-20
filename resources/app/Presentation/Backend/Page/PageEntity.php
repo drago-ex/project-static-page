@@ -1,8 +1,8 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace App\UI\Backend\Page;
+namespace App\Presentation\Backend\Page;
 
 
 class PageEntity

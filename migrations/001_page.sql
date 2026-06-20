@@ -9,7 +9,7 @@ CREATE TABLE static_page (
   status VARCHAR(20) NOT NULL DEFAULT 'draft',
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  
+
   CONSTRAINT uq_page_slug UNIQUE (slug),
   CONSTRAINT chk_page_status CHECK (status IN ('draft', 'published'))
 )

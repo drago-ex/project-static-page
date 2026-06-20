@@ -2,12 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\UI\Backend\Page;
+namespace App\Presentation\Backend\Page;
 
 use Drago\Utils\ExtraArrayHash;
 
 
 class PageValues extends ExtraArrayHash
 {
-
 }

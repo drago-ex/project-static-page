@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\UI\Backend\Page;
+namespace App\Presentation\Backend\Page;
 
 use Drago\Application\UI\Factory;
 use Nette\Application\UI\Form;
@@ -11,7 +11,7 @@ use Nette\Application\UI\Form;
 readonly class PageFactory
 {
 	public function __construct(
-		private Factory $factory
+		private Factory $factory,
 	) {
 	}
 
