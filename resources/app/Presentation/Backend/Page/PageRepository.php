@@ -9,7 +9,7 @@ use Drago\Attr\Table;
 use Drago\Database\Database;
 
 
-#[Table(PageEntity::Table, PageEntity::PrimaryKey, class: PageEntity::class)]
+#[Table(PageEntity::Table, PageEntity::PrimaryKey, entity: PageEntity::class)]
 class PageRepository
 {
 	/** @phpstan-use Database<PageEntity> */
