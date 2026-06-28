@@ -22,12 +22,19 @@ The setup command can run the package migration:
 php vendor/bin/migration db:migrate vendor/drago-ex/project-static-page/migrations
 ```
 
+It can also generate permission providers:
+
+```bash
+php vendor/bin/create-page-permission
+```
+
 ## Installed Files
 
 The package copies:
 
 - `resources/app/Model/Page` to `app/Model/Page`
 - `resources/app/Presentation/Backend/Page` to `app/Presentation/Backend/Page`
+- `resources/app/Presentation/Front/Page` to `app/Presentation/Front/Page`
 
 ## Backend
 
@@ -45,44 +52,32 @@ $builder->addSection('Content')
 	->setIcon('fa-regular fa-file-lines');
 ```
 
-The module uses the permission resource `Backend:Page`. Write actions are checked with the `pages-write` privilege.
+The module uses the permission resource `Backend:Page`. Write actions are checked with the `pages-write` privilege. The backend provider allows the administrator role.
 
 ## Frontend Usage
 
-Use `PageRepository` from any frontend presenter or component and load only published pages by slug:
-
-```php
-use App\Model\Page\PageRepository;
-
-final class PagePresenter extends BasePresenter
-{
-	public function __construct(
-		private readonly PageRepository $pageRepository,
-	) {
-		parent::__construct();
-	}
-
-	public function renderDefault(string $slug): void
-	{
-		$page = $this->pageRepository->getPublishedBySlug($slug);
-		if ($page === null) {
-			$this->error();
-		}
-
-		$this->template->page = $page;
-	}
-}
-```
-
-Template example:
+The package includes a simple frontend presenter for listing published pages and rendering a detail by slug:
 
 ```latte
-{templateType App\Presentation\Front\Page\PageTemplate}
-
-{block content}
-	<h1>{$page->title}</h1>
-	<div>{$page->content|noescape}</div>
-{/block}
+{link :Front:Page:}
+{link :Front:Page:detail, slug: 'about'}
 ```
 
-Use `|noescape` only when the page content is trusted HTML edited by an administrator.
+Add routes to your frontend router if you want clean URLs:
+
+```php
+$router->withModule('Front')
+	->addRoute('[<lang=cs cs|en>/]pages/<slug>', 'Page:detail')
+	->addRoute('[<lang=cs cs|en>/]pages', 'Page:default');
+```
+
+You can also use `PageRepository` directly from any presenter or component:
+
+```php
+$pages = $this->pageRepository->getPublishedPages()->recordAll();
+$page = $this->pageRepository->getPublishedBySlug($slug);
+```
+
+The bundled detail template uses `|noescape` for page content. Use it only when the content is trusted HTML edited by an administrator.
+
+The frontend permission provider uses the resource `Front:Page`. The guest role can use `pages-read` and `pages-view`, so public page listing and page detail can stay available without login.

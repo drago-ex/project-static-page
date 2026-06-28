@@ -1,0 +1,26 @@
+{templateType App\Presentation\Front\Page\PageTemplate}
+
+{block content}
+	<h1 n:block="title" class="display-6 fs-2 mb-4">{_'Pages'}</h1>
+
+	<div class="row g-3">
+		{foreach $pages as $page}
+			<div class="col-12 col-md-6 col-xl-4">
+				<article class="h-100 p-4 bg-body-tertiary rounded">
+					<h2 class="h5 mb-2">
+						<a n:href="detail, slug: $page->slug" class="text-decoration-none">
+							{$page->title}
+						</a>
+					</h2>
+					<p class="text-body-secondary mb-0">
+						{$page->content|stripHtml|truncate:140}
+					</p>
+				</article>
+			</div>
+		{else}
+			<div class="col-12">
+				<p class="text-body-secondary">{_'No published pages yet.'}</p>
+			</div>
+		{/foreach}
+	</div>
+{/block}

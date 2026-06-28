@@ -1,0 +1,12 @@
+{templateType App\Presentation\Front\Page\PageTemplate}
+
+{block content}
+	<article class="mx-auto" style="max-width: 48rem">
+		<a n:href="default" class="d-inline-block mb-4 text-decoration-none">&larr; {_'Pages'}</a>
+		<h1 n:block="title" class="display-6 fs-2 mb-4">{$page->title}</h1>
+
+		<div class="content">
+			{$page->content|noescape}
+		</div>
+	</article>
+{/block}

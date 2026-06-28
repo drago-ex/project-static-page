@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Model\Page;
 
 use Dibi\Connection;
-use Dibi\Row;
 use Drago\Attr\AttributeDetectionException;
 use Drago\Attr\Table;
 use Drago\Database\Database;
@@ -36,13 +35,26 @@ class PageRepository
 
 
 	/**
+	 * @return ExtraFluent<PageEntity>
 	 * @throws AttributeDetectionException
 	 */
-	public function getPublishedBySlug(string $slug): array|Row
+	public function getPublishedPages(): ExtraFluent
+	{
+		return $this->read('*')
+			->where('%n = ?', PageEntity::ColumnStatus, PageEntity::StatusPublished)
+			->orderBy(PageEntity::ColumnTitle, 'ASC')
+			->orderBy(PageEntity::PrimaryKey, 'ASC');
+	}
+
+
+	/**
+	 * @throws AttributeDetectionException
+	 */
+	public function getPublishedBySlug(string $slug): ?PageEntity
 	{
 		return $this->read('*')
 			->where('%n = ?', PageEntity::ColumnSlug, $slug)
 			->where('%n = ?', PageEntity::ColumnStatus, PageEntity::StatusPublished)
-			->fetch();
+			->record();
 	}
 }

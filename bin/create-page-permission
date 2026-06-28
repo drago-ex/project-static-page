@@ -1,0 +1,58 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+$dir = __DIR__;
+$generator = null;
+
+while (true) {
+	$candidate = $dir . '/vendor/drago-ex/permission/bin/create-permission';
+	if (is_file($candidate)) {
+		$generator = $candidate;
+		break;
+	}
+
+	$parent = dirname($dir);
+	if ($parent === $dir) {
+		break;
+	}
+	$dir = $parent;
+}
+
+if ($generator === null) {
+	fwrite(STDERR, "Generator not found.\n");
+	fwrite(STDERR, "Install dependency first: composer require drago-ex/permission\n");
+	exit(1);
+}
+
+$commands = [
+	[
+		'PermissionProvider',
+		'App\\Presentation\\Backend\\Page',
+		'Backend:Page',
+		'app/Presentation/Backend/Page',
+		'--allow=RoleAdmin',
+	],
+	[
+		'PermissionProvider',
+		'App\\Presentation\\Front\\Page',
+		'Front:Page',
+		'app/Presentation/Front/Page',
+		'--allow=RoleGuest,self::Resource,pages-read',
+		'--allow=RoleGuest,self::Resource,pages-view',
+	],
+];
+
+foreach ($commands as $args) {
+	$command = 'php ' . escapeshellarg($generator);
+	foreach ($args as $arg) {
+		$command .= ' ' . escapeshellarg($arg);
+	}
+
+	passthru($command, $exitCode);
+	if ($exitCode !== 0) {
+		exit((int) $exitCode);
+	}
+}
+
