@@ -4,14 +4,26 @@ declare(strict_types=1);
 
 namespace App\Presentation\Backend\Page;
 
-use Nette\Application\UI\Presenter;
+use App\Presentation\Backend\BackendPresenter;
+use App\Presentation\Backend\Page\Component\Page\PageControl;
+use Exception;
+use Throwable;
 
 
-class PagePresenter extends Presenter
+class PagePresenter extends BackendPresenter
 {
 	public function __construct(
-		protected PageFactory $pageFactory,
+		private readonly PageControl $pageControl,
 	) {
 		parent::__construct();
+	}
+
+
+	/** @throws Throwable|Exception */
+	protected function createComponentPages(): PageControl
+	{
+		$control = $this->pageControl;
+		$control->translator = $this->getTranslator();
+		return $control;
 	}
 }

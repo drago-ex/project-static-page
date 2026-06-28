@@ -1,0 +1,5 @@
+search:
+	pagePermissions:
+		in: %appDir%/Presentation
+		classes: [PermissionProvider]
+		tags: [PermissionTag]
