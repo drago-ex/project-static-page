@@ -14,7 +14,7 @@ use Drago\Database\ExtraFluent;
 #[Table(PageEntity::Table, PageEntity::PrimaryKey, entity: PageEntity::class)]
 class PageRepository
 {
-	/** @phpstan-use Database<PageEntity> */
+	/** @use Database<PageEntity> */
 	use Database;
 
 	public function __construct(
