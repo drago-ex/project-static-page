@@ -21,4 +21,3 @@ final class PermissionProvider implements Provider
 		$acl->allow(Role::RoleGuest, self::Resource, 'pages-view');
 	}
 }
-
