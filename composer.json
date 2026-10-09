@@ -1,7 +1,7 @@
 {
 	"name": "drago-ex/project-static-page",
-	"type": "drago-tools-resource",
 	"description": "Static page administration for Drago Project.",
+	"type": "drago-tools-resource",
 	"license": ["MIT"],
 	"require": {
 		"php": ">=8.3 <9",
@@ -19,6 +19,22 @@
 		"drago-ex/translator": "^3.0",
 		"drago-ex/utils": "^2.0"
 	},
+	"require-dev": {
+		"phpstan/phpstan-nette": "^2.0",
+		"drago-ex/project-tools": "^1.0"
+	},
+	"bin": ["bin/create-page-permission"],
+	"scripts": {
+		"phpstan": "phpstan analyse",
+		"post-install-cmd": [
+			"drago-install --dev",
+			"drago-clean"
+		],
+		"post-update-cmd": [
+			"drago-install --dev",
+			"drago-clean"
+		]
+	},
 	"extra": {
 		"drago-tools": {
 			"install": {
@@ -34,23 +50,5 @@
 				"db:migrate-page": "php vendor/bin/migration db:migrate vendor/drago-ex/project-static-page/migrations"
 			}
 		}
-	},
-	"require-dev": {
-		"phpstan/phpstan-nette": "^2.0",
-		"drago-ex/project-tools": "^1.0"
-	},
-	"bin": [
-		"bin/create-page-permission"
-	],
-	"scripts": {
-		"phpstan": "phpstan analyse",
-		"post-install-cmd": [
-			"drago-install --dev",
-			"drago-clean"
-		],
-		"post-update-cmd": [
-			"drago-install --dev",
-			"drago-clean"
-		]
 	}
 }
