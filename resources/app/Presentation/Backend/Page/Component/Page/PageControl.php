@@ -85,13 +85,13 @@ class PageControl extends BaseControl
 	{
 		$form = $this->factory->create();
 		$form->addTextInput(PageValues::Title, 'Title')
-			->setRequired('Please enter title.')
-			->setAutocomplete(Autocomplete::Off);
+			->setAutocomplete(Autocomplete::Off)
+			->setRequired('Please enter title.');
 
 		$form->addTextInput(PageValues::Slug, 'Slug')
+			->setAutocomplete(Autocomplete::Off)
 			->setRequired('Please enter slug.')
-			->addRule($form::Pattern, 'Use lowercase letters, numbers and hyphens.', '[a-z0-9]+(?:-[a-z0-9]+)*')
-			->setAutocomplete(Autocomplete::Off);
+			->addRule($form::Pattern, 'Use lowercase letters, numbers and hyphens.', '[a-z0-9]+(?:-[a-z0-9]+)*');
 
 		$form->addTextAreaForm(PageValues::Content, 'Content')
 			->setHtmlAttribute('rows', 14);
@@ -100,12 +100,12 @@ class PageControl extends BaseControl
 			PageEntity::StatusDraft => 'Draft',
 			PageEntity::StatusPublished => 'Published',
 		])
-			->setRequired('Please select status.')
-			->setDefaultValue(PageEntity::StatusDraft);
+			->setDefaultValue(PageEntity::StatusDraft)
+			->setRequired('Please select status.');
 
 		$form->addHidden('id', $this->id)
-			->addRule($form::Integer)
-			->setNullable();
+			->setNullable()
+			->addRule($form::Integer);
 
 		$form->addSubmit('send', 'Send');
 		$form->onSuccess[] = $this->success(...);
