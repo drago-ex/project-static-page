@@ -29,6 +29,37 @@ class PageControl extends BaseControl
 	}
 
 
+	public function render(): void
+	{
+		$template = $this->createRender();
+		$template->setFile(__DIR__ . '/Page.latte');
+		$template->render();
+	}
+
+
+	/**
+	 * Handles page edit.
+	 * @throws AttributeDetectionException
+	 * @throws Exception
+	 */
+	#[Requires(ajax: true)]
+	public function handleEdit(int $id): void
+	{
+		$item = $this->pageRepository->get($id)->record();
+		if ($item === null) {
+			$this->error();
+		}
+
+		$form = $this->getComponent('page');
+		$form->setDefaults((array) $item);
+
+		$sendControl = $this->getFormComponent($form, 'send');
+		$sendControl?->setCaption('Edit page');
+
+		$this->redrawOffCanvas();
+	}
+
+
 	/** @throws AttributeDetectionException|InvalidColumnException */
 	protected function createComponentDataGrid(): DataGrid
 	{
@@ -73,14 +104,6 @@ class PageControl extends BaseControl
 	}
 
 
-	public function render(): void
-	{
-		$template = $this->createRender();
-		$template->setFile(__DIR__ . '/Page.latte');
-		$template->render();
-	}
-
-
 	protected function createComponentPage(): Form
 	{
 		$form = $this->factory->create();
@@ -113,6 +136,31 @@ class PageControl extends BaseControl
 	}
 
 
+	/**
+	 * @throws AttributeDetectionException
+	 * @throws Exception
+	 */
+	protected function getResultRepository(int $id): Result|int|null
+	{
+		return $this->pageRepository
+			->delete(PageEntity::PrimaryKey, $id)
+			->execute();
+	}
+
+
+	/**
+	 * @throws AttributeDetectionException
+	 * @throws Exception
+	 */
+	protected function getItemRepository(int $id): string|null
+	{
+		return $this->pageRepository
+			->get($id)
+			->record()
+			?->title;
+	}
+
+
 	private function success(Form $form, PageValues $values): void
 	{
 		try {
@@ -136,53 +184,5 @@ class PageControl extends BaseControl
 			$form->addError($message);
 			$this->redrawOffCanvas();
 		}
-	}
-
-
-	/**
-	 * Handles page edit.
-	 * @throws AttributeDetectionException
-	 * @throws Exception
-	 */
-	#[Requires(ajax: true)]
-	public function handleEdit(int $id): void
-	{
-		$item = $this->pageRepository->get($id)->record();
-		if ($item === null) {
-			$this->error();
-		}
-
-		$form = $this->getComponent('page');
-		$form->setDefaults((array) $item);
-
-		$sendControl = $this->getFormComponent($form, 'send');
-		$sendControl?->setCaption('Edit page');
-
-		$this->redrawOffCanvas();
-	}
-
-
-	/**
-	 * @throws AttributeDetectionException
-	 * @throws Exception
-	 */
-	protected function getResultRepository(int $id): Result|int|null
-	{
-		return $this->pageRepository
-			->delete(PageEntity::PrimaryKey, $id)
-			->execute();
-	}
-
-
-	/**
-	 * @throws AttributeDetectionException
-	 * @throws Exception
-	 */
-	protected function getItemRepository(int $id): string|null
-	{
-		return $this->pageRepository
-			->get($id)
-			->record()
-			?->title;
 	}
 }
