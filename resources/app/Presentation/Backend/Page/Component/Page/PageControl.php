@@ -131,7 +131,7 @@ class PageControl extends BaseControl
 			->addRule($form::Integer);
 
 		$form->addSubmit('send', 'Send');
-		$form->onSuccess[] = $this->success(...);
+		$form->onSuccess[] = $this->processPageForm(...);
 		return $form;
 	}
 
@@ -161,7 +161,7 @@ class PageControl extends BaseControl
 	}
 
 
-	private function success(Form $form, PageValues $values): void
+	private function processPageForm(Form $form, PageValues $values): void
 	{
 		try {
 			$message = (int) $values->id > 0 ? 'Update successful.' : 'Insert successful.';
