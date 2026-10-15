@@ -4,6 +4,14 @@ Static page administration for Drago Project.
 
 The package adds a backend module for managing simple pages stored in the `static_page` table. Pages can be created, edited, deleted, filtered and sorted in the datagrid.
 
+[![PHP version](https://badge.fury.io/ph/drago-ex%2Fproject-static-page.svg)](https://badge.fury.io/ph/drago-ex%2Fproject-static-page)
+[![Coding Style](https://github.com/drago-ex/project-static-page/actions/workflows/coding-style.yml/badge.svg)](https://github.com/drago-ex/project-static-page/actions/workflows/coding-style.yml)
+
+## Requirements
+
+- PHP >= 8.3, < 9
+- Composer
+
 ## Installation
 
 ```bash
