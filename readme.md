@@ -34,9 +34,9 @@ php vendor/bin/migration db:migrate --packages
 ## Assets
 
 The package has no own scripts. The toolbar of the content field comes from
-[drago-ex/texy-toolbar](https://github.com/drago-ex/texy-toolbar) and the copy button of code blocks from
-[drago-ex/highlighter](https://github.com/drago-ex/highlighter); set them up as their READMEs show (`admin.js` for
-the toolbar, `front.js` for the copy button). Without them the pages work too.
+[drago-ex/texy-toolbar](https://github.com/drago-ex/texy-toolbar), as does the copy button of code blocks; set
+them up as its README shows (`admin.js` for the toolbar, `front.js` for the copy button). Without them the pages
+work too.
 
 ## Permission provider
 
@@ -82,7 +82,9 @@ already belongs to another page of the site (`admin`, `sign`, `en`…).
 Page content is written in [Texy](https://texy.info/en/syntax). Raw HTML in it is limited to safe tags and links
 to safe URLs; content headings start at `<h2>`, as the page title is the `<h1>`. Code blocks with a language
 (`/--code php`, also html, latte, css, js, sql, neon) are highlighted by
-[drago-ex/highlighter](https://github.com/drago-ex/highlighter) with Bootstrap 5 classes.
+[drago-ex/texy-toolbar](https://github.com/drago-ex/texy-toolbar) with Bootstrap 5 classes. Its DI extension is
+registered by `app/Presentation/Front/Page/8.conf.neon` as `texy`; if the project registers it already, remove
+it there.
 
 The description of a page is printed as `<meta name="description">` by the front layout of drago-ex/project-front.
 

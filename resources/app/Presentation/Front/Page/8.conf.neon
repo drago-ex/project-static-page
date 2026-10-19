@@ -1,3 +1,9 @@
+extensions:
+
+	# highlighter of code blocks in the page content (drago-ex/texy-toolbar)
+	texy: Drago\Texy\DI\TexyExtension
+
+
 services:
 
 	# before the front router (9.conf.neon), whose <presenter>/<action> would take every address

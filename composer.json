@@ -19,7 +19,6 @@
 		"drago-ex/translator": "^4.0",
 		"drago-ex/utils": "^2.0",
 		"texy/texy": "^3.2",
-		"drago-ex/highlighter": "dev-main",
 		"drago-ex/texy-toolbar": "dev-main"
 	},
 	"suggest": {
