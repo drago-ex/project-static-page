@@ -12,7 +12,7 @@ class PageTemplate extends BaseTemplate
 {
 	public PageEntity $page;
 
-	/** HTML of the Texy content, made safe by PageContent. */
+	/** HTML of the Texy content, made safe by TexyFormatter. */
 	public string $content;
 
 	/** Printed as <meta name="description"> by the front layout. */

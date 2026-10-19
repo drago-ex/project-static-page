@@ -1,8 +1,6 @@
 extensions:
-
-	# highlighter of code blocks in the page content (drago-ex/texy-toolbar)
+	# Texy, its toolbar and the code highlighter (drago-ex/texy-toolbar); other packages may register it too
 	texy: Drago\Texy\DI\TexyExtension
-
 
 services:
 
@@ -10,4 +8,3 @@ services:
 	router: {setup: {add(@router.page)}}
 	router.page: {factory: App\Presentation\Front\Page\PageRouter::create, autowired: no}
 	- App\Model\Page\PageSlugs
-	- App\Model\Page\PageContent

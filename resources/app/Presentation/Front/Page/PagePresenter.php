@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Presentation\Front\Page;
 
-use App\Model\Page\PageContent;
 use App\Model\Page\PageRepository;
 use App\Presentation\BasePresenter;
 use Drago\Attr\AttributeDetectionException;
+use Drago\Texy\TexyFormatter;
 
 
 /**
@@ -18,7 +18,7 @@ final class PagePresenter extends BasePresenter
 {
 	public function __construct(
 		private readonly PageRepository $pageRepository,
-		private readonly PageContent $pageContent,
+		private readonly TexyFormatter $texyFormatter,
 	) {
 		parent::__construct();
 	}
@@ -35,7 +35,7 @@ final class PagePresenter extends BasePresenter
 		}
 
 		$this->template->page = $page;
-		$this->template->content = $this->pageContent->toHtml($page->content);
+		$this->template->content = $this->texyFormatter->toHtml($page->content);
 		$this->template->description = $page->description;
 	}
 }

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Presentation\Backend\Page\Component\Page;
 
-use App\Model\Page\PageContent;
 use App\Model\Page\PageEntity;
 use App\Model\Page\PageRepository;
 use App\Model\Page\PageSlugs;
@@ -17,6 +16,7 @@ use Drago\Attr\AttributeDetectionException;
 use Drago\Datagrid\DataGrid;
 use Drago\Datagrid\Exception\InvalidColumnException;
 use Drago\Form\Autocomplete;
+use Drago\Texy\TexyToolbar;
 use Nette\Application\Attributes\Requires;
 use Nette\Application\InvalidPresenterException;
 use Nette\Application\IPresenterFactory;
@@ -37,7 +37,7 @@ class PageControl extends BaseControl
 		private readonly Router $router,
 		private readonly IPresenterFactory $presenterFactory,
 		private readonly IRequest $httpRequest,
-		private readonly PageContent $pageContent,
+		private readonly TexyToolbar $texyToolbar,
 	) {
 		parent::__construct($this->factory);
 	}
@@ -78,8 +78,7 @@ class PageControl extends BaseControl
 	#[Requires(methods: 'POST', ajax: true)]
 	public function handlePreview(): void
 	{
-		$text = $this->httpRequest->getPost('texy');
-		$this->getPresenter()->sendJson(['html' => $this->pageContent->toHtml(is_string($text) ? $text : null)]);
+		$this->getPresenter()->sendJson($this->texyToolbar->getPreview());
 	}
 
 
@@ -148,7 +147,7 @@ class PageControl extends BaseControl
 
 		$form->addTextAreaForm(PageValues::Content, 'Content (Texy)')
 			->setHtmlAttribute('rows', 14)
-			->setHtmlAttribute('data-texy-toolbar', $this->getTexyToolbar());
+			->setHtmlAttribute('data-texy-toolbar', $this->texyToolbar->getOptions($this->link('preview!')));
 
 		$form->addSelect(PageValues::Status, 'Status', [
 			PageEntity::StatusDraft => 'Draft',
@@ -193,34 +192,6 @@ class PageControl extends BaseControl
 			->get($id)
 			->record()
 			?->title;
-	}
-
-
-	/**
-	 * Options of the Texy toolbar (drago-ex/texy-toolbar): the preview signal and translated labels.
-	 * @return array{preview: string, labels: array<string, string>}
-	 */
-	private function getTexyToolbar(): array
-	{
-		$labels = [
-			'bold' => 'Bold',
-			'italic' => 'Italic',
-			'heading' => 'Heading',
-			'list' => 'List',
-			'numbered' => 'Numbered list',
-			'quote' => 'Quote',
-			'link' => 'Link',
-			'image' => 'Image',
-			'code' => 'Code',
-			'preview' => 'Preview',
-			'edit' => 'Edit',
-			'previewError' => 'The preview could not be loaded.',
-		];
-
-		return [
-			'preview' => $this->link('preview!'),
-			'labels' => array_map(fn(string $label): string => $this->translate($label), $labels),
-		];
 	}
 
 

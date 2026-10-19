@@ -7,7 +7,7 @@ Use this file as package-specific guidance when working in this repository. Keep
 - **Type**: drago-tools-resource
 - **Purpose**: Static page administration for Drago Project.
 - **PHP**: >=8.3 <9
-- **Runtime dependencies**: nette/application (^3.2), nette/di (^3.2), nette/caching (^3.3), drago-ex/application (^3.0), drago-ex/component (^2.0), drago-ex/database (^3.0), drago-ex/datagrid (^1.0), drago-ex/form (^2.0), drago-ex/migration (^2.3), drago-ex/project-auth (^2.0), drago-ex/project-backend (^2.0), drago-ex/translator (^4.0), drago-ex/utils (^2.0), texy/texy (^3.2), drago-ex/texy-toolbar (dev-main)
+- **Runtime dependencies**: nette/application (^3.2), nette/di (^3.2), nette/caching (^3.3), drago-ex/application (^3.0), drago-ex/component (^2.0), drago-ex/database (^3.0), drago-ex/datagrid (^1.0), drago-ex/form (^2.0), drago-ex/migration (^2.3), drago-ex/project-auth (^2.0), drago-ex/project-backend (^2.0), drago-ex/translator (^4.0), drago-ex/utils (^2.0), drago-ex/texy-toolbar (dev-main until its first release)
 - **License**: MIT
 
 ## Repository Layout
@@ -22,7 +22,7 @@ Use this file as package-specific guidance when working in this repository. Keep
 - Backend `Backend:Page` (administrators) manages pages with the datagrid; front `Front:Page` (guests allowed on the whole resource, the `Authorization` trait checks `{action}-read`) shows a published page by slug at the top level (`/o-nas`); there is no page listing, drafts give 404.
 - `Front/Page/PageRouter` (added in `Front/Page/8.conf.neon`, loaded before the front router in `9.conf.neon`) matches `[<lang>/]<slug>` only for published slugs, checked by `Model/Page/PageSlugs` (cached; the administration calls `clean()` after save and delete). `PageControl::isReservedSlug()` asks the router and the presenter factory whether `/slug` already leads to another presenter and refuses such a slug.
 - The package ships no `PermissionProvider` classes and no config registering them: they are generated from `permission.php`, and the project (`project-permission` or the `drago-ex/permission` config) registers them.
-- Page content is Texy markup converted by `Model/Page/PageContent` (safe HTML tags, http(s)/mailto links, http(s) images, headings from `<h2>`), so the template prints it with `|noescape` safely. Code blocks are highlighted by `Drago\Texy\CodeBlockHandler` from drago-ex/texy-toolbar, autowired into `PageContent`; its `TexyExtension` is registered as `texy` in `Front/Page/8.conf.neon`.
+- Page content is Texy markup converted by `Drago\Texy\TexyFormatter` of drago-ex/texy-toolbar (safe HTML tags, http(s)/mailto links, http(s) images, headings from `<h2>`, highlighted code), so the template prints it with `|noescape` safely. `Front/Page/8.conf.neon` registers `TexyExtension` as `texy` (other packages register the same entry); `PageControl` takes the toolbar options and the preview from `Drago\Texy\TexyToolbar`, whose labels are translated by texy-toolbar itself.
 
 ## Dependencies
 
@@ -38,7 +38,7 @@ composer phpstan                # phpstan analyse
 
 ## Tests
 
-Nette Tester without a database: `PageContent` (safe output, headings, highlighted code) and `PageRouter` with `PageSlugs` (matching only published slugs, links, cache cleaning). The repository is an anonymous subclass of `PageRepository` on a lazy Dibi connection, as in project-auth.
+Nette Tester without a database: `PageRouter` with `PageSlugs` (matching only published slugs, links, cache cleaning). The repository is an anonymous subclass of `PageRepository` on a lazy Dibi connection, as in project-auth.
 
 ## Installation Hooks
 
