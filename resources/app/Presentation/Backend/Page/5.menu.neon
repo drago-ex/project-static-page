@@ -1,0 +1,5 @@
+# Item of the administration menu (drago-ex/project-backend-ui merges the sidebar parameter of all packages).
+parameters:
+	sidebar:
+		Content:
+			- {title: Static pages, link: 'Page:', icon: fa-regular fa-file-lines bell}

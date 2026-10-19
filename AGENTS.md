@@ -7,31 +7,38 @@ Use this file as package-specific guidance when working in this repository. Keep
 - **Type**: drago-tools-resource
 - **Purpose**: Static page administration for Drago Project.
 - **PHP**: >=8.3 <9
-- **Runtime dependencies**: nette/application (^3.2), nette/di (^3.2), drago-ex/application (^3.0), drago-ex/component (^2.0), drago-ex/database (^3.0), drago-ex/datagrid (^1.0), drago-ex/form (^2.0), drago-ex/migration (^2.0), drago-ex/permission (^2.0), drago-ex/project-auth (^2.0), drago-ex/project-backend (^2.0), drago-ex/translator (^4.0), drago-ex/utils (^2.0)
+- **Runtime dependencies**: nette/application (^3.2), nette/di (^3.2), nette/caching (^3.3), drago-ex/application (^3.0), drago-ex/component (^2.0), drago-ex/database (^3.0), drago-ex/datagrid (^1.0), drago-ex/form (^2.0), drago-ex/migration (^2.3), drago-ex/project-auth (^2.0), drago-ex/project-backend (^2.0), drago-ex/translator (^4.0), drago-ex/utils (^2.0), texy/texy (^3.2)
 - **License**: MIT
 
 ## Repository Layout
-- `bin/`: command-line entry points.
+- `permission.php`: basic access rules for `drago-ex/permission`, declared in `extra.drago-permission` and generated into the project by `create-permission --packages`.
 - `migrations/`: database migrations.
 - `resources/`: application resources contributed to the consuming Drago project.
 - `.github/`: CI workflows; keep their PHP versions and commands consistent with Composer and the package scripts.
 - `composer.json`: package metadata, dependency constraints, autoloading, and available Composer scripts.
 
+## Key Parts
+- `static_page` (migrations `001_page.sql`, `002_page_description.sql`; default `migration-priority`): slug (unique), title, description (meta description, set as `$description` for the front layout), content, status draft/published. The backend form fields are listed in `Component/Page/Page.latte`, so a new form field must be added there too. Backend texts are translated in `Backend/Page/Translate/cs.neon` (the package owns its translations). `PageRepository` reads published pages for the front.
+- Backend `Backend:Page` (administrators) manages pages with the datagrid; front `Front:Page` (guests allowed on the whole resource, the `Authorization` trait checks `{action}-read`) shows a published page by slug at the top level (`/o-nas`); there is no page listing, drafts give 404.
+- `Front/Page/PageRouter` (added in `Front/Page/8.conf.neon`, loaded before the front router in `9.conf.neon`) matches `[<lang>/]<slug>` only for published slugs, checked by `Model/Page/PageSlugs` (cached; the administration calls `clean()` after save and delete). `PageControl::isReservedSlug()` asks the router and the presenter factory whether `/slug` already leads to another presenter and refuses such a slug.
+- The package ships no `PermissionProvider` classes and no config registering them: they are generated from `permission.php`, and the project (`project-permission` or the `drago-ex/permission` config) registers them.
+- Page content is Texy markup converted by `Model/Page/PageContent` (safe HTML tags, http(s)/mailto links, http(s) images, headings from `<h2>`), so the template prints it with `|noescape` safely.
+
 ## Dependencies
 
 Composer constraints describe the package contract. Before changing integration behavior, inspect the source and the actual call sites in this package; do not infer runtime usage solely from dependency declarations.
-Development dependencies include phpstan/phpstan-nette (^2.0), drago-ex/project-tools (^1.0).
+Development dependencies include nette/tester (^2.5), phpstan/phpstan-nette (^2.0), drago-ex/project-tools (^2.0).
 
 ## Essential Commands
 
 ```bash
+composer tester                 # tester tests -s -C
 composer phpstan                # phpstan analyse
 ```
 
 ## Tests
 
-This repository does not currently define a test script in `composer.json` or contain a `tests/` directory.
-Do not claim behavior is covered by tests unless you find and run a relevant suite. When adding a test suite, follow the package’s existing Nette Tester setup if one is present and add an explicit Composer script.
+Nette Tester without a database: `PageContent` (safe output, headings, highlighted code) and `PageRouter` with `PageSlugs` (matching only published slugs, links, cache cleaning). The repository is an anonymous subclass of `PageRepository` on a lazy Dibi connection, as in project-auth.
 
 ## Installation Hooks
 

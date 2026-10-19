@@ -4,16 +4,21 @@ declare(strict_types=1);
 
 namespace App\Presentation\Front\Page;
 
+use App\Model\Page\PageContent;
 use App\Model\Page\PageRepository;
 use App\Presentation\BasePresenter;
 use Drago\Attr\AttributeDetectionException;
 
 
-/** @property-read PageTemplate $template */
+/**
+ * A published page by its slug, at the top-level address given by PageRouter.
+ * @property-read PageTemplate $template
+ */
 final class PagePresenter extends BasePresenter
 {
 	public function __construct(
 		private readonly PageRepository $pageRepository,
+		private readonly PageContent $pageContent,
 	) {
 		parent::__construct();
 	}
@@ -22,18 +27,7 @@ final class PagePresenter extends BasePresenter
 	/**
 	 * @throws AttributeDetectionException
 	 */
-	public function renderDefault(): void
-	{
-		$this->template->pages = $this->pageRepository
-			->getPublishedPages()
-			->recordAll();
-	}
-
-
-	/**
-	 * @throws AttributeDetectionException
-	 */
-	public function renderDetail(string $slug): void
+	public function renderDefault(string $slug): void
 	{
 		$page = $this->pageRepository->getPublishedBySlug($slug);
 		if ($page === null) {
@@ -41,5 +35,7 @@ final class PagePresenter extends BasePresenter
 		}
 
 		$this->template->page = $page;
+		$this->template->content = $this->pageContent->toHtml($page->content);
+		$this->template->description = $page->description;
 	}
 }

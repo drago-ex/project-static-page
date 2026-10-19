@@ -14,6 +14,7 @@ class PageEntity extends Entity
 		PrimaryKey = 'id',
 		ColumnSlug = 'slug',
 		ColumnTitle = 'title',
+		ColumnDescription = 'description',
 		ColumnContent = 'content',
 		ColumnStatus = 'status',
 		ColumnCreatedAt = 'created_at',
@@ -24,8 +25,11 @@ class PageEntity extends Entity
 	public int $id;
 	public string $slug;
 	public string $title;
+
+	/** For search engines (meta description). */
+	public ?string $description = null;
 	public ?string $content = null;
 	public string $status;
-	public string $created_at;
-	public string $updated_at;
+	public \DateTimeInterface $created_at;
+	public \DateTimeInterface $updated_at;
 }

@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Presentation\Backend\Page\Component\Page;
 
+use App\Model\Page\PageContent;
 use App\Model\Page\PageEntity;
 use App\Model\Page\PageRepository;
+use App\Model\Page\PageSlugs;
 use App\Presentation\Backend\Page\Component\BaseControl;
 use App\Presentation\Backend\Page\Component\Factory;
 use Dibi\Exception;
@@ -16,7 +18,14 @@ use Drago\Datagrid\DataGrid;
 use Drago\Datagrid\Exception\InvalidColumnException;
 use Drago\Form\Autocomplete;
 use Nette\Application\Attributes\Requires;
+use Nette\Application\InvalidPresenterException;
+use Nette\Application\IPresenterFactory;
 use Nette\Application\UI\Form;
+use Nette\Forms\Controls\BaseControl as BaseInput;
+use Nette\Http\IRequest;
+use Nette\Http\Request;
+use Nette\Http\UrlScript;
+use Nette\Routing\Router;
 
 
 class PageControl extends BaseControl
@@ -24,6 +33,11 @@ class PageControl extends BaseControl
 	public function __construct(
 		public Factory $factory,
 		private readonly PageRepository $pageRepository,
+		private readonly PageSlugs $pageSlugs,
+		private readonly Router $router,
+		private readonly IPresenterFactory $presenterFactory,
+		private readonly IRequest $httpRequest,
+		private readonly PageContent $pageContent,
 	) {
 		parent::__construct($this->factory);
 	}
@@ -60,6 +74,15 @@ class PageControl extends BaseControl
 	}
 
 
+	/** Returns the HTML of the content for the preview of the Texy toolbar. */
+	#[Requires(methods: 'POST', ajax: true)]
+	public function handlePreview(): void
+	{
+		$text = $this->httpRequest->getPost('texy');
+		$this->getPresenter()->sendJson(['html' => $this->pageContent->toHtml(is_string($text) ? $text : null)]);
+	}
+
+
 	/** @throws AttributeDetectionException|InvalidColumnException */
 	protected function createComponentDataGrid(): DataGrid
 	{
@@ -85,6 +108,8 @@ class PageControl extends BaseControl
 		$user = $this->getPresenter()->getUser();
 
 		if ($user->isAllowed('Backend:Page', 'pages-write')) {
+			// A click on the row opens the form, the Edit button is then hidden by the grid.
+			$grid->setRowClickAction('edit!');
 			$grid->addAction(
 				label: 'Edit',
 				signal: 'edit!',
@@ -116,8 +141,14 @@ class PageControl extends BaseControl
 			->setRequired('Please enter slug.')
 			->addRule($form::Pattern, 'Use lowercase letters, numbers and hyphens.', '[a-z0-9]+(?:-[a-z0-9]+)*');
 
-		$form->addTextAreaForm(PageValues::Content, 'Content')
-			->setHtmlAttribute('rows', 14);
+		$form->addTextInput(PageValues::Description, 'Description for search engines')
+			->setAutocomplete(Autocomplete::Off)
+			->setNullable()
+			->addRule($form::MaxLength, 'The description can have at most %d characters.', 255);
+
+		$form->addTextAreaForm(PageValues::Content, 'Content (Texy)')
+			->setHtmlAttribute('rows', 14)
+			->setHtmlAttribute('data-texy-toolbar', $this->getTexyToolbar());
 
 		$form->addSelect(PageValues::Status, 'Status', [
 			PageEntity::StatusDraft => 'Draft',
@@ -131,6 +162,7 @@ class PageControl extends BaseControl
 			->addRule($form::Integer);
 
 		$form->addSubmit('send', 'Send');
+		$form->onValidate[] = $this->validatePageForm(...);
 		$form->onSuccess[] = $this->processPageForm(...);
 		return $form;
 	}
@@ -142,9 +174,12 @@ class PageControl extends BaseControl
 	 */
 	protected function getResultRepository(int $id): Result|int|null
 	{
-		return $this->pageRepository
+		$result = $this->pageRepository
 			->delete(PageEntity::PrimaryKey, $id)
 			->execute();
+
+		$this->pageSlugs->clean();
+		return $result;
 	}
 
 
@@ -161,12 +196,70 @@ class PageControl extends BaseControl
 	}
 
 
+	/**
+	 * Options of the Texy toolbar (drago-ex/texy-toolbar): the preview signal and translated labels.
+	 * @return array{preview: string, labels: array<string, string>}
+	 */
+	private function getTexyToolbar(): array
+	{
+		$labels = [
+			'bold' => 'Bold',
+			'italic' => 'Italic',
+			'heading' => 'Heading',
+			'list' => 'List',
+			'numbered' => 'Numbered list',
+			'quote' => 'Quote',
+			'link' => 'Link',
+			'image' => 'Image',
+			'code' => 'Code',
+			'preview' => 'Preview',
+			'edit' => 'Edit',
+			'previewError' => 'The preview could not be loaded.',
+		];
+
+		return [
+			'preview' => $this->link('preview!'),
+			'labels' => array_map(fn(string $label): string => $this->translate($label), $labels),
+		];
+	}
+
+
+	/** Pages live at the top level (/slug), so a slug must not take the address of another presenter. */
+	private function validatePageForm(Form $form, PageValues $values): void
+	{
+		$input = $form->getComponent(PageValues::Slug);
+		if ($input instanceof BaseInput && $this->isReservedSlug($values->slug)) {
+			$input->addError('This address is already used by another part of the site.');
+		}
+	}
+
+
+	/** True when /slug already leads to an existing presenter, e.g. /admin, /sign or /en. */
+	private function isReservedSlug(string $slug): bool
+	{
+		$url = $this->httpRequest->getUrl();
+		$params = $this->router->match(new Request(new UrlScript($url->getBaseUrl() . $slug, $url->getBasePath())));
+		$presenter = $params['presenter'] ?? null;
+		if (!is_string($presenter) || $presenter === 'Front:Page') {
+			return false;
+		}
+
+		try {
+			$this->presenterFactory->getPresenterClass($presenter);
+			return true;
+		} catch (InvalidPresenterException) {
+			return false;
+		}
+	}
+
+
 	private function processPageForm(Form $form, PageValues $values): void
 	{
 		try {
 			$message = (int) $values->id > 0 ? 'Update successful.' : 'Insert successful.';
 
 			$this->pageRepository->save($values);
+			$this->pageSlugs->clean();
 			$this->addFlashMessage($message, Alert::Success);
 			$this->addRedraw($this->snippetMessage);
 

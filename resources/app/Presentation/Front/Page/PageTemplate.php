@@ -10,7 +10,11 @@ use App\Presentation\BaseTemplate;
 
 class PageTemplate extends BaseTemplate
 {
-	/** @var PageEntity[] */
-	public array $pages = [];
 	public PageEntity $page;
+
+	/** HTML of the Texy content, made safe by PageContent. */
+	public string $content;
+
+	/** Printed as <meta name="description"> by the front layout. */
+	public ?string $description = null;
 }

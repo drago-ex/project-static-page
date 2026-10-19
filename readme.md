@@ -18,22 +18,33 @@ The package adds a backend module for managing simple pages stored in the `stati
 composer require drago-ex/project-static-page
 ```
 
-Run project setup after installation:
+## Project files
+
+File copying is handled automatically by [drago-ex/project-tools](https://github.com/drago-ex/project-tools),
+which must be installed in your project. Without it, copy the files manually according to the `copy` section
+in this package's `composer.json`. To skip this package, set `"skip": true` under
+`extra.drago-tools.packages.<package-name>` in your root `composer.json`.
+
+## Database migration
 
 ```bash
-php vendor/bin/drago-setup
+php vendor/bin/migration db:migrate --packages
 ```
 
-The setup command can run the package migration:
+## Assets
+
+The package has no own scripts. The toolbar of the content field comes from
+[drago-ex/texy-toolbar](https://github.com/drago-ex/texy-toolbar) and the copy button of code blocks from
+[drago-ex/highlighter](https://github.com/drago-ex/highlighter); set them up as their READMEs show (`admin.js` for
+the toolbar, `front.js` for the copy button). Without them the pages work too.
+
+## Permission provider
+
+With [drago-ex/permission](https://github.com/drago-ex/permission), the access rules from [`permission.php`](permission.php)
+are generated into the project by:
 
 ```bash
-php vendor/bin/migration db:migrate vendor/drago-ex/project-static-page/migrations
-```
-
-It can also generate permission providers:
-
-```bash
-php vendor/bin/create-page-permission
+php vendor/bin/create-permission --packages
 ```
 
 ## Installed Files
@@ -52,40 +63,27 @@ The backend page presenter is available as:
 {link :Backend:Page:}
 ```
 
-If you use the bundled backend sidebar, add the menu item in your backend presenter:
-
-```php
-$builder->addSection('Content')
-	->addItem('Static pages', 'Page:')
-	->setIcon('fa-regular fa-file-lines');
-```
+With [drago-ex/project-backend-ui](https://github.com/drago-ex/project-backend-ui), the item "Static pages"
+appears in the sidebar under "Content" (`Backend/Page/5.menu.neon`).
 
 The module uses the permission resource `Backend:Page`. Write actions are checked with the `pages-write` privilege. The backend provider allows the administrator role.
 
-## Frontend Usage
+## Frontend
 
-The package includes a simple frontend presenter for listing published pages and rendering a detail by slug:
+A published page is shown at the top level of the site, e.g. `/o-nas` (and `/en/o-nas`). The route is added by
+`app/Presentation/Front/Page/8.conf.neon`, before the front router, and matches only slugs of published pages;
+drafts and other addresses go on to the other routes. The administration does not allow a slug whose address
+already belongs to another page of the site (`admin`, `sign`, `en`…).
 
 ```latte
-{link :Front:Page:}
-{link :Front:Page:detail, slug: 'about'}
+{link :Front:Page: slug: 'o-nas'}
 ```
 
-Add routes to your frontend router if you want clean URLs:
+Page content is written in [Texy](https://texy.info/en/syntax). Raw HTML in it is limited to safe tags and links
+to safe URLs; content headings start at `<h2>`, as the page title is the `<h1>`. Code blocks with a language
+(`/--code php`, also html, latte, css, js, sql, neon) are highlighted by
+[drago-ex/highlighter](https://github.com/drago-ex/highlighter) with Bootstrap 5 classes.
 
-```php
-$router->withModule('Front')
-	->addRoute('[<lang=cs cs|en>/]pages/<slug>', 'Page:detail')
-	->addRoute('[<lang=cs cs|en>/]pages', 'Page:default');
-```
+The description of a page is printed as `<meta name="description">` by the front layout of drago-ex/project-front.
 
-You can also use `PageRepository` directly from any presenter or component:
-
-```php
-$pages = $this->pageRepository->getPublishedPages()->recordAll();
-$page = $this->pageRepository->getPublishedBySlug($slug);
-```
-
-The bundled detail template uses `|noescape` for page content. Use it only when the content is trusted HTML edited by an administrator.
-
-The frontend permission provider uses the resource `Front:Page`. The guest role can use `pages-read` and `pages-view`, so public page listing and page detail can stay available without login.
+The frontend permission provider uses the resource `Front:Page` and allows it to guests.

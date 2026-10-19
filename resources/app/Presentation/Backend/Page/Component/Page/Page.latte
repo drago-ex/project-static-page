@@ -1,5 +1,5 @@
 {templateType App\Presentation\Backend\Page\Component\BaseTemplate}
-{embed '../../../../Accessory/Widget/@offcanvas.latte', offcanvasId: $offcanvasId, size: '61rem'}
+{embed '../../../../Accessory/Widget/@offcanvas.latte', offcanvasId: $offcanvasId, size: '100vw'}
 	{block title}{_'Manage page'}{/block}
 	{block body}
 		{snippet offcanvas}
@@ -8,8 +8,9 @@
 				{block form}
 					{include input, name: 'title'}
 					{include input, name: 'slug'}
+					{include input, name: 'description'}
 					{include input, type: 'select', name: 'status'}
-					{include input, type: 'textarea', name: 'content', rows: 14}
+					{include input, type: 'textarea', name: 'content', rows: 24}
 					<div class="col-12">
 						{include buttonDismiss, type: 'offcanvas'}
 						{include submit, name: 'send'}

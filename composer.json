@@ -7,28 +7,31 @@
 		"php": ">=8.3 <9",
 		"nette/application": "^3.2",
 		"nette/di": "^3.2",
+		"nette/caching": "^3.3",
 		"drago-ex/application": "^3.0",
 		"drago-ex/component": "^2.0",
 		"drago-ex/database": "^3.0",
 		"drago-ex/datagrid": "^1.0",
 		"drago-ex/form": "^2.0",
-		"drago-ex/migration": "^2.0",
-		"drago-ex/permission": "^2.0",
+		"drago-ex/migration": "^2.3",
 		"drago-ex/project-auth": "^2.0",
 		"drago-ex/project-backend": "^2.0",
 		"drago-ex/translator": "^4.0",
-		"drago-ex/utils": "^2.0"
+		"drago-ex/utils": "^2.0",
+		"texy/texy": "^3.2",
+		"drago-ex/highlighter": "dev-main",
+		"drago-ex/texy-toolbar": "dev-main"
 	},
 	"suggest": {
-		"drago-ex/permission": "Enables generation of the frontend permission provider."
+		"drago-ex/permission": "Generates the access rules of the page administration and the pages (permission.php).",
+		"drago-ex/project-permission": "Role and permission management in the administration, which registers the generated providers.",
+		"drago-ex/project-backend-ui": "Administration layout; the page administration uses its content widget."
 	},
 	"require-dev": {
+		"nette/tester": "^2.5",
 		"phpstan/phpstan-nette": "^2.0",
-		"drago-ex/project-tools": "^1.0"
+		"drago-ex/project-tools": "^2.0"
 	},
-	"bin": [
-		"bin/create-page-permission"
-	],
 	"extra": {
 		"drago-tools": {
 			"install": {
@@ -37,19 +40,16 @@
 					"resources/app/Presentation/Backend": "app/Presentation/Backend",
 					"resources/app/Presentation/Front": "app/Presentation/Front"
 				}
-			},
-			"commands-priority": 30,
-			"commands": {
-				"create:page-permission": "php vendor/bin/create-page-permission",
-				"db:migrate-page": "php vendor/bin/migration db:migrate vendor/drago-ex/project-static-page/migrations"
 			}
 		},
+		"drago-permission": "permission.php",
 		"drago-translator": {
 			"translation": "app/Presentation/Backend/Page/Translate"
 		}
 	},
 	"scripts": {
 		"phpstan": "phpstan analyse",
+		"tester": "tester tests -s -C",
 		"post-install-cmd": [
 			"drago-install --dev",
 			"drago-clean"

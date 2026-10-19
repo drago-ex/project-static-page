@@ -1,0 +1,7 @@
+services:
+
+	# before the front router (9.conf.neon), whose <presenter>/<action> would take every address
+	router: {setup: {add(@router.page)}}
+	router.page: {factory: App\Presentation\Front\Page\PageRouter::create, autowired: no}
+	- App\Model\Page\PageSlugs
+	- App\Model\Page\PageContent

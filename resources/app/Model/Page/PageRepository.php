@@ -48,6 +48,19 @@ class PageRepository
 
 
 	/**
+	 * @return list<string>
+	 * @throws AttributeDetectionException
+	 */
+	public function getPublishedSlugs(): array
+	{
+		/** @var list<string> */
+		return $this->read(PageEntity::ColumnSlug)
+			->where('%n = ?', PageEntity::ColumnStatus, PageEntity::StatusPublished)
+			->fetchPairs(null, PageEntity::ColumnSlug);
+	}
+
+
+	/**
 	 * @throws AttributeDetectionException
 	 */
 	public function getPublishedBySlug(string $slug): ?PageEntity
