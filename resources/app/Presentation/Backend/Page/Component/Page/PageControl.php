@@ -10,7 +10,6 @@ use App\Model\Page\PageSlugs;
 use App\Presentation\Backend\Page\Component\BaseControl;
 use App\Presentation\Backend\Page\Component\Factory;
 use Dibi\Exception;
-use Dibi\Result;
 use Drago\Application\UI\Alert;
 use Drago\Attr\AttributeDetectionException;
 use Drago\Datagrid\DataGrid;
@@ -108,20 +107,9 @@ class PageControl extends BaseControl
 
 		if ($user->isAllowed('Backend:Page', 'pages-write')) {
 			// A click on the row opens the form, the Edit button is then hidden by the grid.
-			$grid->setRowClickAction('edit!');
-			$grid->addAction(
-				label: 'Edit',
-				signal: 'edit!',
-				class: 'ajax btn btn-xs btn-primary',
-				callback: fn(int $id) => $this->handleEdit($id),
-			);
-
-			$grid->addAction(
-				label: 'Delete',
-				signal: 'delete!',
-				class: 'ajax btn btn-xs btn-danger',
-				callback: fn(int $id) => $this->handleDelete($id),
-			);
+			$grid->setRowClickAction('edit');
+			$grid->addActionEdit(fn(int $id) => $this->handleEdit($id));
+			$grid->addActionDelete(fn(int $id) => $this->handleDelete($id));
 		}
 
 		return $grid;
@@ -156,7 +144,7 @@ class PageControl extends BaseControl
 			->setDefaultValue(PageEntity::StatusDraft)
 			->setRequired('Please select status.');
 
-		$form->addHidden('id', $this->id)
+		$form->addHidden('id')
 			->setNullable()
 			->addRule($form::Integer);
 
@@ -171,14 +159,13 @@ class PageControl extends BaseControl
 	 * @throws AttributeDetectionException
 	 * @throws Exception
 	 */
-	protected function getResultRepository(int $id): Result|int|null
+	protected function deleteItem(int $id): void
 	{
-		$result = $this->pageRepository
+		$this->pageRepository
 			->delete(PageEntity::PrimaryKey, $id)
 			->execute();
 
 		$this->pageSlugs->clean();
-		return $result;
 	}
 
 
@@ -186,7 +173,7 @@ class PageControl extends BaseControl
 	 * @throws AttributeDetectionException
 	 * @throws Exception
 	 */
-	protected function getItemRepository(int $id): string|null
+	protected function getItemTitle(int $id): ?string
 	{
 		return $this->pageRepository
 			->get($id)
