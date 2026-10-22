@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Presentation\Front\Page;
 
 use App\Model\Page\PageSlugs;
+use Drago\Form\Forms;
 use Nette;
 use Nette\Application\Routers\Route;
 use Nette\Application\Routers\RouteList;
@@ -22,7 +23,7 @@ final class PageRouter
 	{
 		$router = new RouteList;
 		$router->withModule('Front')
-			->addRoute('[<lang=cs cs|en>/]<slug [a-z0-9]+(?:-[a-z0-9]+)*>', [
+			->addRoute('[<lang=cs cs|en>/]<slug ' . Forms::SlugPattern . '>', [
 				'presenter' => 'Page',
 				'action' => 'default',
 				'slug' => [
