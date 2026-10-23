@@ -145,6 +145,8 @@ class PageControl extends BaseControl
 		$form->addSubmit('send', 'Send');
 		$form->onValidate[] = $this->validatePageForm(...);
 		$form->onSuccess[] = $this->processPageForm(...);
+		// errors found on the server (e.g. a reserved slug) are shown in the open offcanvas
+		$form->onError[] = fn() => $this->redrawOffCanvas();
 		return $form;
 	}
 

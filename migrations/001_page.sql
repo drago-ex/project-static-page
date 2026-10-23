@@ -1,10 +1,12 @@
 --
 --  Static page
 -- ------------
+-- description is the meta description for search engines.
 CREATE TABLE static_page (
   id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   slug VARCHAR(255) NOT NULL,
   title VARCHAR(255) NOT NULL,
+  description VARCHAR(255) NULL,
   content LONGTEXT NULL,
   status VARCHAR(20) NOT NULL DEFAULT 'draft',
   created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
