@@ -27,3 +27,8 @@
 "This page already exists.": "Tato stránka již existuje."
 "This address is already used by another part of the site.": "Tuto adresu už používá jiná část webu."
 "The description can have at most %d characters.": "Popis může mít nejvýše %d znaků."
+
+# privileges for drago-ex/project-permission (migrations-permission)
+"View static pages": "Zobrazit statické stránky"
+"Sort and filter static pages": "Řadit a filtrovat statické stránky"
+"Manage static pages": "Správa statických stránek"

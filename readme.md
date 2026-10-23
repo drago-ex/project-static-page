@@ -37,14 +37,58 @@ The package has no own scripts. The toolbar of the content field and the copy bu
 [drago-ex/texy-toolbar](https://github.com/drago-ex/texy-toolbar); set them up as its README shows (`admin.js` for
 the toolbar, `front.js` for the copy button). Without them the pages work too.
 
-## Permission provider
+## Permissions
 
-With [drago-ex/permission](https://github.com/drago-ex/permission), the access rules from [`permission.php`](permission.php)
-are generated into the project by:
+Static pages work without permissions and without [drago-ex/permission](https://github.com/drago-ex/permission):
+the administration shows all its buttons.
+
+For static permissions, the access rules are prepared in [`permission.php`](permission.php); drago-ex/permission
+generates a provider from it (set up as its README shows):
 
 ```bash
 php vendor/bin/create-permission --packages
 ```
+
+For dynamic permissions set in the administration, install [drago-ex/project-permission](https://github.com/drago-ex/project-permission)
+first and then:
+
+- import the privileges of the page administration into its `resources` table, so roles can be given them:
+
+  ```bash
+  php vendor/bin/migration db:migrate vendor/drago-ex/project-static-page/migrations-permission
+  ```
+
+- to show the add, edit and delete buttons only to roles with the privilege, add the `WriteAccess` trait that
+  project-permission installs; its `isWriteAllowed()` asks for the `{component}-write` privilege. In
+  `app/Presentation/Backend/Page/Component/BaseControl.php` use the trait and pass the result to the template
+  (with `public bool $writeAllowed = false;` in `BaseTemplate`):
+
+  ```php
+  use App\Presentation\Backend\Accessory\WriteAccess;
+
+  abstract class BaseControl extends ExtraControl implements OffcanvasHandle, ModalHandle
+  {
+  	use Component;
+  	use WriteAccess;
+
+  	public function createRender(): Template
+  	{
+  		// ...
+  		$template->writeAllowed = $this->isWriteAllowed();
+  ```
+
+  then hide the grid actions by it and show the add button only when allowed:
+
+  ```php
+  $grid->addActionEdit(fn(int $id) => $this->handleEdit($id))
+  	->setVisible($this->isWriteAllowed());
+  ```
+
+  ```latte
+  {embed '../@datagrid-heading.latte', addButton: $writeAllowed}
+  ```
+
+In a project composed by [netis](https://github.com/netis-cms/netis), project-preset makes these changes for you.
 
 ## Installed Files
 

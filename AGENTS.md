@@ -7,7 +7,7 @@ Use this file as package-specific guidance when working in this repository. Keep
 - **Type**: drago-tools-resource
 - **Purpose**: Static page administration for Drago Project.
 - **PHP**: >=8.3 <9
-- **Runtime dependencies**: nette/application (^3.2), nette/di (^3.2), nette/caching (^3.3), drago-ex/application (^3.0), drago-ex/component (^2.0), drago-ex/database (^3.0), drago-ex/datagrid (^2.0), drago-ex/form (^3.0), drago-ex/migration (^2.3), drago-ex/project-auth (^2.0), drago-ex/project-backend (^2.0), drago-ex/translator (^4.0), drago-ex/utils (^2.0), drago-ex/texy-toolbar (dev-main until its first release), drago-ex/project-user (^2.0)
+- **Runtime dependencies**: nette/application (^3.2), nette/di (^3.2), nette/caching (^3.3), drago-ex/application (^3.0), drago-ex/component (^2.0), drago-ex/database (^3.0), drago-ex/datagrid (^2.0), drago-ex/form (^3.0), drago-ex/migration (^2.3), drago-ex/project-auth (^2.0), drago-ex/project-backend (^2.0), drago-ex/translator (^4.0), drago-ex/utils (^2.0), drago-ex/texy-toolbar (dev-main until its first release)
 - **License**: MIT
 
 ## Repository Layout
@@ -25,7 +25,9 @@ Use this file as package-specific guidance when working in this repository. Keep
 - Page content is Texy markup converted by `Drago\Texy\TexyFormatter` of drago-ex/texy-toolbar (safe HTML tags, http(s)/mailto links, http(s) images, headings from `<h2>`, highlighted code), so the template prints it with `|noescape` safely. `Front/Page/8.conf.neon` registers `TexyExtension` as `texy` (other packages register the same entry); `PageControl` takes the toolbar options and the preview from `Drago\Texy\TexyToolbar`, whose labels are translated by texy-toolbar itself.
 
 ## Buttons and permissions
-- `Component\BaseControl::isWriteAllowed()` asks `CurrentUser::isPermitted(presenter, "{control}-write")` of drago-ex/project-user, the privilege the Authorization trait of drago-ex/permission checks for the control's signals; without drago-ex/permission everything is allowed, so the administration also works without it.
+- The package has no permission code (no write check, no `setVisible()`, no `$writeAllowed`): all add/edit/delete buttons are shown. The README "Permissions" section lists the optional manual steps: static permissions (permission.php, create-permission) and dynamic ones with project-permission (import `migrations-permission/`, `use WriteAccess` in `BaseControl`, `$writeAllowed` in the template, `->setVisible($this->isWriteAllowed())` on grid actions, `addButton: $writeAllowed`). project-preset is meant to ship those changes pre-done. Do not add permission code to the package.
+- `@datagrid-heading.latte` shows the add button with `addButton: true`.
+- `migrations-permission/` holds the privileges of the administration for the `resources` table of drago-ex/project-permission (`INSERT IGNORE`). It is not run by `db:migrate --packages`; the user imports it by hand (`db:migrate vendor/drago-ex/<package>/migrations-permission`). The rows must match what the `Authorization` trait checks: `{action}-read` of the presenter's pages and `{component}-read/write` of its components; a new page or component needs a new file there (executed files must not change), and a translation of its description in `cs.neon`.
 
 ## Dependencies
 
