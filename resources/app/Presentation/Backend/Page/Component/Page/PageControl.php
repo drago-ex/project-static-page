@@ -26,6 +26,8 @@ use Nette\Http\IRequest;
 use Nette\Http\Request;
 use Nette\Http\UrlScript;
 use Nette\Routing\Router;
+use Tracy\Debugger;
+use Tracy\ILogger;
 
 
 class PageControl extends BaseControl
@@ -231,6 +233,11 @@ class PageControl extends BaseControl
 			$this['dataGrid']->redrawDataGrid();
 
 		} catch (\Throwable $e) {
+			if ($e->getCode() !== 1062) {
+				// unexpected: the user sees a general message, the log the cause
+				Debugger::log($e, ILogger::EXCEPTION);
+			}
+
 			$message = match ($e->getCode()) {
 				1062 => 'This page already exists.',
 				default => 'Unknown status code.',
