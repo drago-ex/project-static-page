@@ -1,7 +1,7 @@
 --
 --  Static page
 -- ------------
--- description is the meta description for search engines.
+-- description is the meta description for search engines; in_menu puts a published page into the front menu, ordered by menu_position.
 CREATE TABLE static_page (
   id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   slug VARCHAR(255) NOT NULL,
@@ -9,6 +9,8 @@ CREATE TABLE static_page (
   description VARCHAR(255) NULL,
   content LONGTEXT NULL,
   status VARCHAR(20) NOT NULL DEFAULT 'draft',
+  in_menu TINYINT(1) NOT NULL DEFAULT 0,
+  menu_position INT NOT NULL DEFAULT 0,
   created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 

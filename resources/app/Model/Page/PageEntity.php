@@ -17,6 +17,8 @@ class PageEntity extends Entity
 		ColumnDescription = 'description',
 		ColumnContent = 'content',
 		ColumnStatus = 'status',
+		ColumnInMenu = 'in_menu',
+		ColumnMenuPosition = 'menu_position',
 		ColumnCreatedAt = 'created_at',
 		ColumnUpdatedAt = 'updated_at',
 		StatusDraft = 'draft',
@@ -30,6 +32,10 @@ class PageEntity extends Entity
 	public ?string $description = null;
 	public ?string $content = null;
 	public string $status;
+
+	/** A published page with in_menu is in the front menu, ordered by menu_position. */
+	public int $in_menu;
+	public int $menu_position;
 	public \DateTimeInterface $created_at;
 	public \DateTimeInterface $updated_at;
 }

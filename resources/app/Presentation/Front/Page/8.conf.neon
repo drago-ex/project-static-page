@@ -8,3 +8,4 @@ services:
 	router: {setup: {add(@router.page)}}
 	router.page: {factory: App\Presentation\Front\Page\PageRouter::create, autowired: no}
 	- App\Model\Page\PageSlugs
+	- App\Model\Page\PageMenu

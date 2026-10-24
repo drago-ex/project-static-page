@@ -89,7 +89,8 @@ into its `resources` table by hand, so roles can be given them:
 php vendor/bin/migration db:migrate vendor/drago-ex/project-static-page/migrations-permission
 ```
 
-In a project composed by [netis](https://github.com/netis-cms/netis), project-preset makes these changes for you.
+In a project composed by [netis](https://github.com/netis-cms/netis), project-preset makes these changes for you
+and the web installer of project-install imports the privileges.
 
 ## Installed Files
 
@@ -122,6 +123,20 @@ already belongs to another page of the site (`admin`, `sign`, `en`…).
 ```latte
 {link :Front:Page: slug: 'o-nas'}
 ```
+
+A published page with "Show in the menu" belongs to the front menu, ordered by "Position in the menu".
+`App\Model\Page\PageMenu::getItems()` returns those pages (slug => title) from a cache, which the administration
+cleans when a page is saved or deleted. The package has no front layout, so print them in yours:
+
+```php
+$this->template->menuPages = $this->pageMenu->getItems();
+```
+
+```latte
+<a n:foreach="$menuPages as $slug => $title" n:href=":Front:Page:default, slug: $slug">{$title}</a>
+```
+
+[drago-ex/project-preset](https://github.com/drago-ex/project-preset) does it in its front layout.
 
 Page content is written in [Texy](https://texy.info/en/syntax). Raw HTML in it is limited to safe tags and links
 to safe URLs; content headings start at `<h2>`, as the page title is the `<h1>`. Code blocks with a language

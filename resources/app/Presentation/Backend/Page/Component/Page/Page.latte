@@ -10,6 +10,8 @@
 					{include input, name: 'slug'}
 					{include input, name: 'description'}
 					{include input, type: 'select', name: 'status'}
+					{include input, type: 'number', name: 'menu_position', columns: 6}
+					{include checkbox, name: 'in_menu', columns: 6}
 					{include input, type: 'textarea', name: 'content', rows: 24}
 					<div class="col-12">
 						{include buttonDismiss, type: 'offcanvas'}

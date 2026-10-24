@@ -89,7 +89,8 @@ do jeho tabulky `resources`, aby je bylo možné přidělovat rolím:
 php vendor/bin/migration db:migrate vendor/drago-ex/project-static-page/migrations-permission
 ```
 
-V projektu sestaveném přes [netis](https://github.com/netis-cms/netis) tyto změny udělá project-preset.
+V projektu sestaveném přes [netis](https://github.com/netis-cms/netis) tyto změny udělá project-preset
+a privilegia naimportuje webový instalátor z project-install.
 
 ## Instalované soubory
 
@@ -122,6 +123,20 @@ už patří jiné stránce webu (`admin`, `sign`, `en`…).
 ```latte
 {link :Front:Page: slug: 'o-nas'}
 ```
+
+Publikovaná stránka se zaškrtnutým „Zobrazit v menu“ patří do menu veřejné části, seřazená podle „Pořadí v menu“.
+`App\Model\Page\PageMenu::getItems()` vrací tyto stránky (slug => název) z cache, kterou administrace vyčistí
+po uložení nebo smazání stránky. Balíček nemá layout veřejné části, vypište je proto ve svém:
+
+```php
+$this->template->menuPages = $this->pageMenu->getItems();
+```
+
+```latte
+<a n:foreach="$menuPages as $slug => $title" n:href=":Front:Page:default, slug: $slug">{$title}</a>
+```
+
+V layoutu veřejné části to dělá [drago-ex/project-preset](https://github.com/drago-ex/project-preset).
 
 Obsah stránky se píše v [Texy](https://texy.info/cs/syntax). Přímé HTML v něm je omezené na bezpečné značky a odkazy
 na bezpečné URL; nadpisy obsahu začínají od `<h2>`, protože nadpis stránky je `<h1>`. Bloky kódu s jazykem

@@ -7,7 +7,7 @@ Use this file as package-specific guidance when working in this repository. Keep
 - **Type**: drago-tools-resource
 - **Purpose**: Static page administration for Drago Project.
 - **PHP**: >=8.3 <9
-- **Runtime dependencies**: nette/application (^3.2), nette/di (^3.2), nette/caching (^3.3), drago-ex/application (^3.0), drago-ex/component (^2.0), drago-ex/database (^3.0), drago-ex/datagrid (^2.0), drago-ex/form (^3.0), drago-ex/migration (^2.3), drago-ex/project-auth (^2.0), drago-ex/project-backend (^2.0), drago-ex/translator (^4.0), drago-ex/utils (^2.0), drago-ex/texy-toolbar (dev-main until its first release)
+- **Runtime dependencies**: nette/application (^3.2), nette/di (^3.2), nette/caching (^3.3), drago-ex/application (^3.0 || ^4.0), drago-ex/component (^2.0), drago-ex/database (^3.0), drago-ex/datagrid (^2.0), drago-ex/form (^3.0), drago-ex/migration (^2.3), drago-ex/project-auth (^2.0), drago-ex/project-backend (^2.0), drago-ex/translator (^4.0), drago-ex/utils (^2.0), drago-ex/texy-toolbar (dev-main until its first release)
 - **License**: MIT
 
 ## Repository Layout
@@ -18,7 +18,7 @@ Use this file as package-specific guidance when working in this repository. Keep
 - `composer.json`: package metadata, dependency constraints, autoloading, and available Composer scripts.
 
 ## Key Parts
-- `static_page` (migration `001_page.sql`; default `migration-priority`): slug (unique), title, description (meta description, set as `$description` for the front layout), content, status draft/published. The backend form fields are listed in `Component/Page/Page.latte`, so a new form field must be added there too. Backend texts are translated in `Backend/Page/Translate/cs.neon` (the package owns its translations). `PageRepository` reads published pages for the front.
+- `static_page` (migration `001_page.sql`; default `migration-priority`): slug (unique), title, description (meta description, set as `$description` for the front layout), content, status draft/published, `in_menu` + `menu_position` (front menu). `Model/Page/PageMenu` caches the menu pages (`PageRepository::getMenuPages()`, slug => title); the package itself has no front layout, project-preset prints them in its navbar. `PageControl` cleans both `PageSlugs` and `PageMenu` after save and delete. The backend form fields are listed in `Component/Page/Page.latte`, so a new form field must be added there too. Backend texts are translated in `Backend/Page/Translate/cs.neon` (the package owns its translations). `PageRepository` reads published pages for the front.
 - Backend `Backend:Page` (administrators) manages pages with the datagrid; front `Front:Page` (guests allowed on the whole resource, the `Authorization` trait checks `{action}-read`) shows a published page by slug at the top level (`/o-nas`); there is no page listing, drafts give 404.
 - `Front/Page/PageRouter` (added in `Front/Page/8.conf.neon`, loaded before the front router in `9.conf.neon`) matches `[<lang>/]<slug>` only for published slugs, checked by `Model/Page/PageSlugs` (cached; the administration calls `clean()` after save and delete). `PageControl::isReservedSlug()` asks the router and the presenter factory whether `/slug` already leads to another presenter and refuses such a slug.
 - The package ships no `PermissionProvider` classes and no config registering them: they are generated from `permission.php`, and the project (`project-permission` or the `drago-ex/permission` config) registers them.

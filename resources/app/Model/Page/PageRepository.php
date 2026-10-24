@@ -35,15 +35,19 @@ class PageRepository
 
 
 	/**
-	 * @return ExtraFluent<PageEntity>
+	 * Published pages of the front menu, ordered by their position: slug => title.
+	 * @return array<string, string>
 	 * @throws AttributeDetectionException
 	 */
-	public function getPublishedPages(): ExtraFluent
+	public function getMenuPages(): array
 	{
-		return $this->read('*')
+		/** @var array<string, string> */
+		return $this->read('%n, %n', PageEntity::ColumnSlug, PageEntity::ColumnTitle)
 			->where('%n = ?', PageEntity::ColumnStatus, PageEntity::StatusPublished)
+			->where('%n = 1', PageEntity::ColumnInMenu)
+			->orderBy(PageEntity::ColumnMenuPosition, 'ASC')
 			->orderBy(PageEntity::ColumnTitle, 'ASC')
-			->orderBy(PageEntity::PrimaryKey, 'ASC');
+			->fetchPairs(PageEntity::ColumnSlug, PageEntity::ColumnTitle);
 	}
 
 

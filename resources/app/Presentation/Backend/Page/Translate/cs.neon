@@ -24,9 +24,13 @@
 "Update successful.": "Záznam byl úspěšně upraven."
 "Delete successful.": "Záznam byl úspěšně smazán."
 "Unknown status code.": "Neznámý stavový kód."
+"The item could not be deleted.": "Záznam se nepodařilo smazat."
 "This page already exists.": "Tato stránka již existuje."
 "This address is already used by another part of the site.": "Tuto adresu už používá jiná část webu."
 "The description can have at most %d characters.": "Popis může mít nejvýše %d znaků."
+"Show in the menu": "Zobrazit v menu"
+"Position in the menu": "Pořadí v menu"
+"Please enter the position in the menu.": "Zadejte prosím pořadí v menu."
 
 # privileges for drago-ex/project-permission (migrations-permission)
 "View static pages": "Zobrazit statické stránky"

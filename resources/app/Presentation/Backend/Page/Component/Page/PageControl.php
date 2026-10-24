@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Presentation\Backend\Page\Component\Page;
 
 use App\Model\Page\PageEntity;
+use App\Model\Page\PageMenu;
 use App\Model\Page\PageRepository;
 use App\Model\Page\PageSlugs;
 use App\Presentation\Backend\Page\Component\BaseControl;
@@ -33,6 +34,7 @@ class PageControl extends BaseControl
 		public Factory $factory,
 		private readonly PageRepository $pageRepository,
 		private readonly PageSlugs $pageSlugs,
+		private readonly PageMenu $pageMenu,
 		private readonly Router $router,
 		private readonly IPresenterFactory $presenterFactory,
 		private readonly IRequest $httpRequest,
@@ -138,6 +140,12 @@ class PageControl extends BaseControl
 			->setDefaultValue(PageEntity::StatusDraft)
 			->setRequired('Please select status.');
 
+		$form->addCheckbox(PageValues::InMenu, 'Show in the menu');
+
+		$form->addIntegerInput(PageValues::MenuPosition, 'Position in the menu')
+			->setDefaultValue(0)
+			->setRequired('Please enter the position in the menu.');
+
 		$form->addHidden('id')
 			->setNullable()
 			->addRule($form::Integer);
@@ -162,6 +170,7 @@ class PageControl extends BaseControl
 			->execute();
 
 		$this->pageSlugs->clean();
+		$this->pageMenu->clean();
 	}
 
 
@@ -214,6 +223,7 @@ class PageControl extends BaseControl
 
 			$this->pageRepository->save($values);
 			$this->pageSlugs->clean();
+			$this->pageMenu->clean();
 			$this->addFlashMessage($message, Alert::Success);
 			$this->addRedraw($this->snippetMessage);
 
