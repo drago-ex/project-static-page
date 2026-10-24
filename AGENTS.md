@@ -7,7 +7,7 @@ Use this file as package-specific guidance when working in this repository. Keep
 - **Type**: drago-tools-resource
 - **Purpose**: Static page administration for Drago Project.
 - **PHP**: >=8.3 <9
-- **Runtime dependencies**: nette/application (^3.2), nette/di (^3.2), nette/caching (^3.3), drago-ex/application (^3.0 || ^4.0), drago-ex/component (^2.0), drago-ex/database (^3.0), drago-ex/datagrid (^2.0), drago-ex/form (^3.0), drago-ex/migration (^2.3), drago-ex/project-auth (^2.0), drago-ex/project-backend (^2.0), drago-ex/translator (^4.0), drago-ex/utils (^2.0), drago-ex/texy-toolbar (^1.0)
+- **Runtime dependencies**: nette/application (^3.2), nette/di (^3.2), nette/caching (^3.3), drago-ex/application (^3.0 || ^4.0), drago-ex/component (^2.0), drago-ex/database (^3.0 || ^4.0), drago-ex/datagrid (^2.0), drago-ex/form (^3.0), drago-ex/migration (^2.3), drago-ex/project-auth (^2.0), drago-ex/project-backend (^2.0), drago-ex/translator (^4.0), drago-ex/utils (^2.0), drago-ex/texy-toolbar (^1.0)
 - **License**: MIT
 
 ## Repository Layout
@@ -29,7 +29,7 @@ Use this file as package-specific guidance when working in this repository. Keep
 - `@datagrid-heading.latte` shows the add button with `addButton: true`.
 - The add/edit form in the full-screen offcanvas has two columns (2026-10-24, the user's choice over tabs or an accordion, which would hide fields with errors): the title and the content on the left (`col-lg-8`), the settings in cards on the right (`col-lg-4`), and the buttons in a `sticky-bottom` bar, so they stay visible while the content scrolls. A new field goes into the fitting card, nothing is hidden.
 - Page form cards (no headings, the field labels are enough): status; in_menu and menu_position; slug and meta description.
-- `migrations-permission/` holds the privileges of the administration for the `resources` table of drago-ex/project-permission (`INSERT IGNORE`). It is not run by `db:migrate --packages`; the user imports it by hand (`db:migrate vendor/drago-ex/<package>/migrations-permission`). The rows must match what the `Authorization` trait checks: `{action}-read` of the presenter's pages and `{component}-read/write` of its components; a new page or component needs a new file there (executed files must not change), and a translation of its description in `cs.neon`.
+- `migrations-permission/` holds the privileges of the administration for the `resources` table of drago-ex/project-permission (`INSERT IGNORE`). It is not run by `db:migrate --packages`; the user imports it by hand (`db:migrate vendor/drago-ex/<package>/migrations-permission`). The rows must match what the `Authorization` trait checks: `{action}-read` of the presenter's pages and `{component}-read/write` of its components; a new page or component is added to that file while no real project runs (test databases are recreated, see the workspace rule for migrations; a follow-up file only once real projects run), and a translation of its description in `cs.neon`.
 
 ## Dependencies
 

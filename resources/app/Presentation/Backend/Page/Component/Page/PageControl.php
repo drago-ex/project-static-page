@@ -26,8 +26,6 @@ use Nette\Http\IRequest;
 use Nette\Http\Request;
 use Nette\Http\UrlScript;
 use Nette\Routing\Router;
-use Tracy\Debugger;
-use Tracy\ILogger;
 
 
 class PageControl extends BaseControl
@@ -121,10 +119,12 @@ class PageControl extends BaseControl
 		$form = $this->factory->create();
 		$form->addTextInput(PageValues::Title, 'Title')
 			->setAutocomplete(Autocomplete::Off)
-			->setRequired('Please enter title.');
+			->setRequired('Please enter title.')
+			->addRule($form::MaxLength, 'The title can have at most %d characters.', 255);
 
 		$form->addSlugInput(PageValues::Slug, 'Slug')
-			->setRequired('Please enter slug.');
+			->setRequired('Please enter slug.')
+			->addRule($form::MaxLength, 'The slug can have at most %d characters.', 255);
 
 		$form->addTextInput(PageValues::Description, 'Description for search engines')
 			->setAutocomplete(Autocomplete::Off)
@@ -145,7 +145,9 @@ class PageControl extends BaseControl
 
 		$form->addIntegerInput(PageValues::MenuPosition, 'Position in the menu')
 			->setDefaultValue(0)
-			->setRequired('Please enter the position in the menu.');
+			->setRequired('Please enter the position in the menu.')
+			// the column is INT, a larger number would fail only in the database
+			->addRule($form::Range, 'The position in the menu must be from %d to %d.', [0, 2_147_483_647]);
 
 		$form->addHidden('id')
 			->setNullable()
@@ -154,7 +156,7 @@ class PageControl extends BaseControl
 		$form->addSubmit('send', 'Send');
 		$form->onValidate[] = $this->validatePageForm(...);
 		$form->onSuccess[] = $this->processPageForm(...);
-		// errors found on the server (e.g. a reserved slug) are shown in the open offcanvas
+		// errors found on the server (a reserved slug, those added by processPageForm()) are shown in the open offcanvas
 		$form->onError[] = fn() => $this->redrawOffCanvas();
 		return $form;
 	}
@@ -233,18 +235,11 @@ class PageControl extends BaseControl
 			$this['dataGrid']->redrawDataGrid();
 
 		} catch (\Throwable $e) {
-			if ($e->getCode() !== 1062) {
-				// unexpected: the user sees a general message, the log the cause
-				Debugger::log($e, ILogger::EXCEPTION);
-			}
-
-			$message = match ($e->getCode()) {
+			// shown in the open offcanvas by onError
+			$form->addError(match ($e->getCode()) {
 				1062 => 'This page already exists.',
-				default => 'Unknown status code.',
-			};
-
-			$form->addError($message);
-			$this->redrawOffCanvas();
+				default => $this->logUnexpected($e),
+			});
 		}
 	}
 }

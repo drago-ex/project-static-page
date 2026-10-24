@@ -36,12 +36,12 @@ class PageRepository
 
 	/**
 	 * Published pages of the front menu, ordered by their position: slug => title.
-	 * @return array<string, string>
+	 * @return array<int|string, string> (an all-digit slug becomes an int key)
 	 * @throws AttributeDetectionException
 	 */
 	public function getMenuPages(): array
 	{
-		/** @var array<string, string> */
+		/** @var array<int|string, string> */
 		return $this->read('%n, %n', PageEntity::ColumnSlug, PageEntity::ColumnTitle)
 			->where('%n = ?', PageEntity::ColumnStatus, PageEntity::StatusPublished)
 			->where('%n = 1', PageEntity::ColumnInMenu)

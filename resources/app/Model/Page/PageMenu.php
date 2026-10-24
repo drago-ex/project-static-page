@@ -27,12 +27,12 @@ class PageMenu
 
 
 	/**
-	 * @return array<string, string> slug => title
+	 * @return array<int|string, string> slug => title (PHP makes an all-digit slug an int key)
 	 * @throws AttributeDetectionException
 	 */
 	public function getItems(): array
 	{
-		/** @var array<string, string> */
+		/** @var array<int|string, string> */
 		return $this->cache->load('items', fn(): array => $this->pageRepository->getMenuPages());
 	}
 
