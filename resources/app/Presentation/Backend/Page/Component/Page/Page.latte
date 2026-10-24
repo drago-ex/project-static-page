@@ -6,14 +6,51 @@
 			{embed '../../../../Accessory/Widget/@form.latte', class: 'ajax', name: 'page', najaHistory: 'off'}
 				{import '../../../../Accessory/Widget/@dismiss-button.latte'}
 				{block form}
-					{include input, name: 'title'}
-					{include input, name: 'slug'}
-					{include input, name: 'description'}
-					{include input, type: 'select', name: 'status'}
-					{include input, type: 'number', name: 'menu_position', columns: 6}
-					{include checkbox, name: 'in_menu', columns: 6}
-					{include input, type: 'textarea', name: 'content', rows: 24}
-					<div class="col-12">
+					{* the text of the page on the left, its settings in cards on the right; nothing is hidden,
+					   so every error is visible, and the buttons stay at the bottom while the content scrolls *}
+					<div class="col-lg-8">
+						<div class="row g-3">
+							{include input, name: 'title'}
+							{* the height follows the window, so the whole form fits without scrolling the page *}
+							<div class="col-12 form-error">
+								{label content, class => 'form-label fw-semibold' /}
+								{input content, class => 'form-control', style => 'height: calc(100vh - 22rem); min-height: 14rem'}
+							</div>
+						</div>
+					</div>
+
+					<div class="col-lg-4">
+						<div class="vstack gap-3">
+							<section class="card border-0 shadow-sm bg-body-tertiary">
+								<div class="card-body">
+									<div class="row g-3">
+										{include input, type: 'select', name: 'status'}
+									</div>
+								</div>
+							</section>
+
+							<section class="card border-0 shadow-sm bg-body-tertiary">
+								<div class="card-body">
+									<div class="row g-3">
+										{include checkbox, name: 'in_menu'}
+										{include input, type: 'number', name: 'menu_position'}
+									</div>
+								</div>
+							</section>
+
+							<section class="card border-0 shadow-sm bg-body-tertiary">
+								<div class="card-body">
+									<div class="row g-3">
+										{include input, name: 'slug'}
+										{include input, name: 'description'}
+									</div>
+								</div>
+							</section>
+						</div>
+					</div>
+
+					{* moved down by the padding of the offcanvas body, so no content shows below the bar *}
+					<div class="col-12 sticky-bottom bg-body pt-3 d-flex justify-content-end gap-2" style="bottom: calc(-1 * var(--bs-offcanvas-padding-y)); padding-bottom: calc(1rem + var(--bs-offcanvas-padding-y))">
 						{include buttonDismiss, type: 'offcanvas'}
 						{include submit, name: 'send'}
 					</div>

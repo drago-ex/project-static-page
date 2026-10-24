@@ -130,7 +130,6 @@ class PageControl extends BaseControl
 			->addRule($form::MaxLength, 'The description can have at most %d characters.', 255);
 
 		$form->addTextAreaInput(PageValues::Content, 'Content (Texy)')
-			->setHtmlAttribute('rows', 14)
 			->setHtmlAttribute('data-texy-toolbar', $this->texyToolbar->getOptions($this->link('preview!')));
 
 		$form->addSelect(PageValues::Status, 'Status', [
