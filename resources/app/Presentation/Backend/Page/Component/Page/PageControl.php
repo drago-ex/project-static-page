@@ -123,8 +123,7 @@ class PageControl extends BaseControl
 			->addRule($form::MaxLength, 'The title can have at most %d characters.', 255);
 
 		$form->addSlugInput(PageValues::Slug, 'Slug')
-			->setRequired('Please enter slug.')
-			->addRule($form::MaxLength, 'The slug can have at most %d characters.', 255);
+			->setRequired('Please enter slug.');
 
 		$form->addTextInput(PageValues::Description, 'Description for search engines')
 			->setAutocomplete(Autocomplete::Off)
