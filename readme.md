@@ -43,7 +43,7 @@ The backend page presenter is available as:
 {link :Backend:Page:}
 ```
 
-With [drago-ex/project-backend-ui](https://github.com/drago-ex/project-backend-ui), add the links to its menu (see its README); [drago-ex/project-preset](https://github.com/drago-ex/project-preset) adds them for you.
+With [drago-ex/project-backend-ui](https://github.com/drago-ex/project-backend-ui), add the links to its menu (see its README).
 
 The module uses the permission resource `Backend:Page`. Write actions are checked with the `pages-write` privilege. The backend provider allows the administrator role.
 
@@ -69,8 +69,6 @@ $this->template->menuPages = $this->pageMenu->getItems();
 ```latte
 <a n:foreach="$menuPages as $slug => $title" n:href=":Front:Page:default, slug: $slug">{$title}</a>
 ```
-
-[drago-ex/project-preset](https://github.com/drago-ex/project-preset) does it in its front layout.
 
 Page content is written in [Texy](https://texy.info/en/syntax). Raw HTML in it is limited to safe tags and links
 to safe URLs; content headings start at `<h2>`, as the page title is the `<h1>`. Code blocks with a language
@@ -137,6 +135,3 @@ into its `resources` table by hand, so roles can be given them:
 ```bash
 php vendor/bin/migration db:migrate vendor/drago-ex/project-static-page/migrations-permission
 ```
-
-In a project composed by [netis](https://github.com/netis-cms/netis) with `--permission`, [drago-ex/project-preset-permission](https://github.com/drago-ex/project-preset-permission)
-makes these changes for you and its web installer imports the privileges.

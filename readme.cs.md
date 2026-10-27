@@ -43,7 +43,7 @@ Presenter stránek v administraci je dostupný jako:
 {link :Backend:Page:}
 ```
 
-S [drago-ex/project-backend-ui](https://github.com/drago-ex/project-backend-ui) přidejte odkazy do jeho menu (viz jeho README); [drago-ex/project-preset](https://github.com/drago-ex/project-preset) je přidá za vás.
+S [drago-ex/project-backend-ui](https://github.com/drago-ex/project-backend-ui) přidejte odkazy do jeho menu (viz jeho README).
 
 Modul používá zdroj oprávnění `Backend:Page`. Zápisové akce se kontrolují privilegiem `pages-write`. Provider administrace povoluje roli administrátora.
 
@@ -69,8 +69,6 @@ $this->template->menuPages = $this->pageMenu->getItems();
 ```latte
 <a n:foreach="$menuPages as $slug => $title" n:href=":Front:Page:default, slug: $slug">{$title}</a>
 ```
-
-V layoutu veřejné části to dělá [drago-ex/project-preset](https://github.com/drago-ex/project-preset).
 
 Obsah stránky se píše v [Texy](https://texy.info/cs/syntax). Přímé HTML v něm je omezené na bezpečné značky a odkazy
 na bezpečné URL; nadpisy obsahu začínají od `<h2>`, protože nadpis stránky je `<h1>`. Bloky kódu s jazykem
@@ -137,6 +135,3 @@ do jeho tabulky `resources`, aby je bylo možné přidělovat rolím:
 ```bash
 php vendor/bin/migration db:migrate vendor/drago-ex/project-static-page/migrations-permission
 ```
-
-V projektu sestaveném přes [netis](https://github.com/netis-cms/netis) s `--permission` tyto změny udělá [drago-ex/project-preset-permission](https://github.com/drago-ex/project-preset-permission)
-a privilegia naimportuje jeho webový instalátor.
