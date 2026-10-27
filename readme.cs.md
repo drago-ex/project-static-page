@@ -18,12 +18,10 @@ Balíček přidává modul administrace pro správu jednoduchých stránek ulož
 composer require drago-ex/project-static-page
 ```
 
-## Soubory projektu
+## Soubory kopírované do projektu
 
-Kopírování souborů obstarává automaticky [drago-ex/project-tools](https://github.com/drago-ex/project-tools),
-který musí být v projektu nainstalovaný. Bez něj zkopírujte soubory ručně podle sekce `copy`
-v `composer.json` tohoto balíčku. Pro přeskočení balíčku nastavte `"skip": true` v
-`extra.drago-tools.packages.<package-name>` v kořenovém `composer.json`.
+Soubory do projektu kopíruje [drago-ex/project-tools](https://github.com/drago-ex/project-tools)
+podle nastavení v `extra.drago-tools` v `composer.json` tohoto balíčku.
 
 ## Migrace databáze
 
@@ -36,14 +34,6 @@ php vendor/bin/migration db:migrate --packages
 Balíček nemá vlastní skripty. Lišta pole s obsahem a tlačítko pro kopírování bloků kódu pocházejí z
 [drago-ex/texy-toolbar](https://github.com/drago-ex/texy-toolbar); nastavte je podle jeho README (`admin.js` pro
 lištu, `front.js` pro tlačítko kopírování). Stránky fungují i bez nich.
-
-## Instalované soubory
-
-Balíček kopíruje:
-
-- `resources/app/Model/Page` do `app/Model/Page`
-- `resources/app/Presentation/Backend/Page` do `app/Presentation/Backend/Page`
-- `resources/app/Presentation/Front/Page` do `app/Presentation/Front/Page`
 
 ## Administrace
 

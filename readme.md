@@ -18,12 +18,10 @@ The package adds a backend module for managing simple pages stored in the `stati
 composer require drago-ex/project-static-page
 ```
 
-## Project files
+## Files copied into the project
 
-File copying is handled automatically by [drago-ex/project-tools](https://github.com/drago-ex/project-tools),
-which must be installed in your project. Without it, copy the files manually according to the `copy` section
-in this package's `composer.json`. To skip this package, set `"skip": true` under
-`extra.drago-tools.packages.<package-name>` in your root `composer.json`.
+The files are copied into the project by [drago-ex/project-tools](https://github.com/drago-ex/project-tools),
+as set in `extra.drago-tools` of this package's `composer.json`.
 
 ## Database migration
 
@@ -36,14 +34,6 @@ php vendor/bin/migration db:migrate --packages
 The package has no own scripts. The toolbar of the content field and the copy button of code blocks come from
 [drago-ex/texy-toolbar](https://github.com/drago-ex/texy-toolbar); set them up as its README shows (`admin.js` for
 the toolbar, `front.js` for the copy button). Without them the pages work too.
-
-## Installed Files
-
-The package copies:
-
-- `resources/app/Model/Page` to `app/Model/Page`
-- `resources/app/Presentation/Backend/Page` to `app/Presentation/Backend/Page`
-- `resources/app/Presentation/Front/Page` to `app/Presentation/Front/Page`
 
 ## Backend
 
