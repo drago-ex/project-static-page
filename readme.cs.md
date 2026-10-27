@@ -1,7 +1,5 @@
 # Drago Project Static Page
 
-[English](readme.md) | Čeština
-
 Administrace statických stránek pro Drago Project.
 
 Balíček přidává modul administrace pro správu jednoduchých stránek uložených v tabulce `static_page`. Stránky lze v datagridu vytvářet, upravovat, mazat, filtrovat a řadit.

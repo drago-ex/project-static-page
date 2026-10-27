@@ -1,7 +1,5 @@
 # Drago Project Static Page
 
-English | [Čeština](readme.cs.md)
-
 Static page administration for Drago Project.
 
 The package adds a backend module for managing simple pages stored in the `static_page` table. Pages can be created, edited, deleted, filtered and sorted in the datagrid.
