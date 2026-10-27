@@ -37,59 +37,6 @@ The package has no own scripts. The toolbar of the content field and the copy bu
 [drago-ex/texy-toolbar](https://github.com/drago-ex/texy-toolbar); set them up as its README shows (`admin.js` for
 the toolbar, `front.js` for the copy button). Without them the pages work too.
 
-## Permissions
-
-Static pages work without permissions and without [drago-ex/permission](https://github.com/drago-ex/permission):
-the administration shows all its buttons.
-
-For static permissions, the access rules are prepared in [`permission.php`](permission.php); drago-ex/permission
-generates a provider from it (set up as its README shows):
-
-```bash
-php vendor/bin/create-permission --packages
-```
-
-To show the add, edit and delete buttons only to roles with the privilege, add the `WriteAccess` trait of
-drago-ex/permission; its `isWriteAllowed()` asks for the `{component}-write` privilege. In
-`app/Presentation/Backend/Page/Component/BaseControl.php` use the trait and pass the result to the template
-(with `public bool $writeAllowed = false;` in `BaseTemplate`):
-
-```php
-use Drago\Permission\WriteAccess;
-
-abstract class BaseControl extends ExtraControl implements OffcanvasHandle, ModalHandle
-{
-	use Component;
-	use WriteAccess;
-
-	public function createRender(): Template
-	{
-		// ...
-		$template->writeAllowed = $this->isWriteAllowed();
-```
-
-then hide the grid actions by it and show the add button only when allowed:
-
-```php
-$grid->addActionEdit(fn(int $id) => $this->handleEdit($id))
-	->setVisible($this->isWriteAllowed());
-```
-
-```latte
-{embed '../@datagrid-heading.latte', addButton: $writeAllowed}
-```
-
-For dynamic permissions set in the administration, install
-[drago-ex/project-permission](https://github.com/drago-ex/project-permission) and import the privileges of the page administration
-into its `resources` table by hand, so roles can be given them:
-
-```bash
-php vendor/bin/migration db:migrate vendor/drago-ex/project-static-page/migrations-permission
-```
-
-In a project composed by [netis](https://github.com/netis-cms/netis), project-preset makes these changes for you
-and the web installer of project-install imports the privileges.
-
 ## Installed Files
 
 The package copies:
@@ -145,3 +92,56 @@ to safe URLs; content headings start at `<h2>`, as the page title is the `<h1>`.
 The description of a page is printed as `<meta name="description">` by the front layout of drago-ex/project-front.
 
 The frontend permission provider uses the resource `Front:Page` and allows it to guests.
+
+## Permissions
+
+Static pages work without permissions and without [drago-ex/permission](https://github.com/drago-ex/permission):
+the administration shows all its buttons.
+
+For static permissions, the access rules are prepared in [`permission.php`](permission.php); drago-ex/permission
+generates a provider from it (set up as its README shows):
+
+```bash
+php vendor/bin/create-permission --packages
+```
+
+To show the add, edit and delete buttons only to roles with the privilege, add the `WriteAccess` trait of
+drago-ex/permission; its `isWriteAllowed()` asks for the `{component}-write` privilege. In
+`app/Presentation/Backend/Page/Component/BaseControl.php` use the trait and pass the result to the template
+(with `public bool $writeAllowed = false;` in `BaseTemplate`):
+
+```php
+use Drago\Permission\WriteAccess;
+
+abstract class BaseControl extends ExtraControl implements OffcanvasHandle, ModalHandle
+{
+	use Component;
+	use WriteAccess;
+
+	public function createRender(): Template
+	{
+		// ...
+		$template->writeAllowed = $this->isWriteAllowed();
+```
+
+then hide the grid actions by it and show the add button only when allowed:
+
+```php
+$grid->addActionEdit(fn(int $id) => $this->handleEdit($id))
+	->setVisible($this->isWriteAllowed());
+```
+
+```latte
+{embed '../@datagrid-heading.latte', addButton: $writeAllowed}
+```
+
+For dynamic permissions set in the administration, install
+[drago-ex/project-permission](https://github.com/drago-ex/project-permission) and import the privileges of the page administration
+into its `resources` table by hand, so roles can be given them:
+
+```bash
+php vendor/bin/migration db:migrate vendor/drago-ex/project-static-page/migrations-permission
+```
+
+In a project composed by [netis](https://github.com/netis-cms/netis), project-preset makes these changes for you
+and the web installer of project-install imports the privileges.

@@ -37,59 +37,6 @@ Balíček nemá vlastní skripty. Lišta pole s obsahem a tlačítko pro kopíro
 [drago-ex/texy-toolbar](https://github.com/drago-ex/texy-toolbar); nastavte je podle jeho README (`admin.js` pro
 lištu, `front.js` pro tlačítko kopírování). Stránky fungují i bez nich.
 
-## Oprávnění
-
-Statické stránky fungují bez oprávnění i bez [drago-ex/permission](https://github.com/drago-ex/permission):
-administrace pak zobrazuje všechna svá tlačítka.
-
-Pro statická oprávnění jsou pravidla přístupu připravená v [`permission.php`](permission.php); drago-ex/permission
-z nich vygeneruje provider (nastavení popisuje jeho README):
-
-```bash
-php vendor/bin/create-permission --packages
-```
-
-Aby tlačítka pro přidání, úpravu a mazání viděly jen role s privilegiem, přidejte trait `WriteAccess` z
-drago-ex/permission; jeho `isWriteAllowed()` se ptá na privilegium `{component}-write`. V
-`app/Presentation/Backend/Page/Component/BaseControl.php` trait použijte a výsledek předejte do šablony
-(s `public bool $writeAllowed = false;` v `BaseTemplate`):
-
-```php
-use Drago\Permission\WriteAccess;
-
-abstract class BaseControl extends ExtraControl implements OffcanvasHandle, ModalHandle
-{
-	use Component;
-	use WriteAccess;
-
-	public function createRender(): Template
-	{
-		// ...
-		$template->writeAllowed = $this->isWriteAllowed();
-```
-
-potom podle něj skryjte akce gridu a tlačítko pro přidání zobrazte jen s oprávněním:
-
-```php
-$grid->addActionEdit(fn(int $id) => $this->handleEdit($id))
-	->setVisible($this->isWriteAllowed());
-```
-
-```latte
-{embed '../@datagrid-heading.latte', addButton: $writeAllowed}
-```
-
-Pro dynamická oprávnění nastavovaná v administraci nainstalujte
-[drago-ex/project-permission](https://github.com/drago-ex/project-permission) a ručně naimportujte privilegia administrace stránek
-do jeho tabulky `resources`, aby je bylo možné přidělovat rolím:
-
-```bash
-php vendor/bin/migration db:migrate vendor/drago-ex/project-static-page/migrations-permission
-```
-
-V projektu sestaveném přes [netis](https://github.com/netis-cms/netis) tyto změny udělá project-preset
-a privilegia naimportuje webový instalátor z project-install.
-
 ## Instalované soubory
 
 Balíček kopíruje:
@@ -145,3 +92,56 @@ na bezpečné URL; nadpisy obsahu začínají od `<h2>`, protože nadpis stránk
 Popis stránky vypíše layout veřejné části z drago-ex/project-front jako `<meta name="description">`.
 
 Provider oprávnění veřejné části používá zdroj `Front:Page` a povoluje ho návštěvníkům.
+
+## Oprávnění
+
+Statické stránky fungují bez oprávnění i bez [drago-ex/permission](https://github.com/drago-ex/permission):
+administrace pak zobrazuje všechna svá tlačítka.
+
+Pro statická oprávnění jsou pravidla přístupu připravená v [`permission.php`](permission.php); drago-ex/permission
+z nich vygeneruje provider (nastavení popisuje jeho README):
+
+```bash
+php vendor/bin/create-permission --packages
+```
+
+Aby tlačítka pro přidání, úpravu a mazání viděly jen role s privilegiem, přidejte trait `WriteAccess` z
+drago-ex/permission; jeho `isWriteAllowed()` se ptá na privilegium `{component}-write`. V
+`app/Presentation/Backend/Page/Component/BaseControl.php` trait použijte a výsledek předejte do šablony
+(s `public bool $writeAllowed = false;` v `BaseTemplate`):
+
+```php
+use Drago\Permission\WriteAccess;
+
+abstract class BaseControl extends ExtraControl implements OffcanvasHandle, ModalHandle
+{
+	use Component;
+	use WriteAccess;
+
+	public function createRender(): Template
+	{
+		// ...
+		$template->writeAllowed = $this->isWriteAllowed();
+```
+
+potom podle něj skryjte akce gridu a tlačítko pro přidání zobrazte jen s oprávněním:
+
+```php
+$grid->addActionEdit(fn(int $id) => $this->handleEdit($id))
+	->setVisible($this->isWriteAllowed());
+```
+
+```latte
+{embed '../@datagrid-heading.latte', addButton: $writeAllowed}
+```
+
+Pro dynamická oprávnění nastavovaná v administraci nainstalujte
+[drago-ex/project-permission](https://github.com/drago-ex/project-permission) a ručně naimportujte privilegia administrace stránek
+do jeho tabulky `resources`, aby je bylo možné přidělovat rolím:
+
+```bash
+php vendor/bin/migration db:migrate vendor/drago-ex/project-static-page/migrations-permission
+```
+
+V projektu sestaveném přes [netis](https://github.com/netis-cms/netis) tyto změny udělá project-preset
+a privilegia naimportuje webový instalátor z project-install.
