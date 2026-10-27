@@ -43,8 +43,7 @@ The backend page presenter is available as:
 {link :Backend:Page:}
 ```
 
-With [drago-ex/project-backend-ui](https://github.com/drago-ex/project-backend-ui), the item "Static pages"
-appears in the sidebar under "Content" (`Backend/Page/5.menu.neon`).
+With [drago-ex/project-backend-ui](https://github.com/drago-ex/project-backend-ui), add the links to its menu (see its README); [drago-ex/project-preset](https://github.com/drago-ex/project-preset) adds them for you.
 
 The module uses the permission resource `Backend:Page`. Write actions are checked with the `pages-write` privilege. The backend provider allows the administrator role.
 

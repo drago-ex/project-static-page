@@ -43,8 +43,7 @@ Presenter stránek v administraci je dostupný jako:
 {link :Backend:Page:}
 ```
 
-S [drago-ex/project-backend-ui](https://github.com/drago-ex/project-backend-ui) se v postranním menu objeví položka
-„Statické stránky“ v sekci „Obsah“ (`Backend/Page/5.menu.neon`).
+S [drago-ex/project-backend-ui](https://github.com/drago-ex/project-backend-ui) přidejte odkazy do jeho menu (viz jeho README); [drago-ex/project-preset](https://github.com/drago-ex/project-preset) je přidá za vás.
 
 Modul používá zdroj oprávnění `Backend:Page`. Zápisové akce se kontrolují privilegiem `pages-write`. Provider administrace povoluje roli administrátora.
 
