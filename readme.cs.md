@@ -10,7 +10,7 @@ Balíček přidává modul administrace pro správu jednoduchých stránek ulož
 ## Požadavky
 
 - PHP >= 8.3, < 9
-- Composer
+- [Drago Project](https://github.com/drago-ex/project)
 
 ## Instalace
 

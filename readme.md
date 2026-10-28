@@ -10,7 +10,7 @@ The package adds a backend module for managing simple pages stored in the `stati
 ## Requirements
 
 - PHP >= 8.3, < 9
-- Composer
+- [Drago Project](https://github.com/drago-ex/project)
 
 ## Installation
 
