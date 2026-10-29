@@ -1,10 +1,8 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * Test: App\Model\Page\PageMenu
  */
-
-declare(strict_types=1);
 
 use App\Model\Page\PageMenu;
 use App\Model\Page\PageRepository;

@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace App\Model\Page;
 
@@ -9,8 +7,7 @@ use Drago\Database\Entity;
 
 class PageEntity extends Entity
 {
-	public const string
-		Table = 'static_page',
+	public const string Table = 'static_page',
 		PrimaryKey = 'id',
 		ColumnSlug = 'slug',
 		ColumnTitle = 'title',

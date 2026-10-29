@@ -1,10 +1,8 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * Test: App\Presentation\Front\Page\PageRouter and App\Model\Page\PageSlugs
  */
-
-declare(strict_types=1);
 
 use App\Model\Page\PageRepository;
 use App\Model\Page\PageSlugs;
@@ -25,9 +23,9 @@ function createRepository(array $slugs): PageRepository
 		public int $queries = 0;
 
 
-		/** @param list<string> $slugs */
 		public function __construct(
 			Connection $connection,
+			/** @var list<string> */
 			public array $slugs,
 		) {
 			parent::__construct($connection);

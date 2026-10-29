@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace App\Presentation\Backend\Page\Component\Page;
 
@@ -26,6 +24,7 @@ use Nette\Http\IRequest;
 use Nette\Http\Request;
 use Nette\Http\UrlScript;
 use Nette\Routing\Router;
+use function is_string;
 
 
 class PageControl extends BaseControl
