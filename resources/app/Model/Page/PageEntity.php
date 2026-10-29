@@ -30,9 +30,9 @@ class PageEntity extends Entity
 	public ?string $content = null;
 	public string $status;
 
-	/** A published page with in_menu is in the front menu, ordered by menu_position. */
-	public int $in_menu;
-	public int $menu_position;
-	public \DateTimeInterface $created_at;
-	public \DateTimeInterface $updated_at;
+	/** A published page with $inMenu is in the front menu, ordered by $menuPosition. */
+	public int $inMenu;
+	public int $menuPosition;
+	public \DateTimeInterface $createdAt;
+	public \DateTimeInterface $updatedAt;
 }

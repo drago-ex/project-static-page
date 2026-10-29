@@ -12,8 +12,8 @@ class PageValues extends ExtraArrayHash
 		Description = 'description',
 		Content = 'content',
 		Status = 'status',
-		InMenu = 'in_menu',
-		MenuPosition = 'menu_position';
+		InMenu = 'inMenu',
+		MenuPosition = 'menuPosition';
 
 	public ?int $id = null;
 	public string $title;
@@ -21,6 +21,6 @@ class PageValues extends ExtraArrayHash
 	public ?string $description = null;
 	public ?string $content = null;
 	public string $status;
-	public bool $in_menu = false;
-	public int $menu_position = 0;
+	public bool $inMenu = false;
+	public int $menuPosition = 0;
 }
