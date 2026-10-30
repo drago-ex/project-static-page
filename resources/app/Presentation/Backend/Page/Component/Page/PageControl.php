@@ -13,12 +13,14 @@ use Drago\Application\UI\Alert;
 use Drago\Attr\AttributeDetectionException;
 use Drago\Datagrid\DataGrid;
 use Drago\Datagrid\Exception\InvalidColumnException;
+use Drago\Datagrid\Exception\InvalidConfigurationException;
 use Drago\Form\Autocomplete;
 use Drago\Texy\TexyToolbar;
 use Nette\Application\Attributes\Requires;
 use Nette\Application\InvalidPresenterException;
 use Nette\Application\IPresenterFactory;
 use Nette\Application\UI\Form;
+use Nette\Application\UI\InvalidLinkException;
 use Nette\Forms\Controls\BaseControl as BaseInput;
 use Nette\Http\IRequest;
 use Nette\Http\Request;
@@ -82,7 +84,10 @@ class PageControl extends BaseControl
 	}
 
 
-	/** @throws AttributeDetectionException|InvalidColumnException */
+	/**
+	 * @throws AttributeDetectionException|InvalidColumnException
+	 * @throws InvalidConfigurationException
+	 */
 	protected function createComponentDataGrid(): DataGrid
 	{
 		$grid = new DataGrid;
@@ -113,6 +118,7 @@ class PageControl extends BaseControl
 	}
 
 
+	/** @throws InvalidLinkException */
 	protected function createComponentPage(): Form
 	{
 		$form = $this->factory->create();

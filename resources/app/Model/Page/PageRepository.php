@@ -3,6 +3,7 @@
 namespace App\Model\Page;
 
 use Dibi\Connection;
+use Dibi\Exception;
 use Drago\Attr\AttributeDetectionException;
 use Drago\Attr\Table;
 use Drago\Database\Database;
@@ -16,7 +17,7 @@ class PageRepository
 	use Database;
 
 	public function __construct(
-		protected readonly Connection $connection,
+		private readonly Connection $connection,
 	) {
 	}
 
@@ -64,6 +65,7 @@ class PageRepository
 
 	/**
 	 * @throws AttributeDetectionException
+	 * @throws Exception
 	 */
 	public function getPublishedBySlug(string $slug): ?PageEntity
 	{

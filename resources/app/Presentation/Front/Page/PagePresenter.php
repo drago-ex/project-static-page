@@ -4,6 +4,7 @@ namespace App\Presentation\Front\Page;
 
 use App\Model\Page\PageRepository;
 use App\Presentation\BasePresenter;
+use Dibi\Exception;
 use Drago\Attr\AttributeDetectionException;
 use Drago\Texy\TexyFormatter;
 
@@ -24,6 +25,7 @@ final class PagePresenter extends BasePresenter
 
 	/**
 	 * @throws AttributeDetectionException
+	 * @throws Exception
 	 */
 	public function renderDefault(string $slug): void
 	{
