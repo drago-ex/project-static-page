@@ -125,7 +125,7 @@ class PageControl extends BaseControl
 		$form->addTextInput(PageValues::Title, 'Title')
 			->setAutocomplete(Autocomplete::Off)
 			->setRequired('Please enter title.')
-			->addRule($form::MaxLength, 'The title can have at most %d characters.', 255);
+			->addRule($form::MaxLength, 'The title can have at most %d characters.', PageEntity::ColumnTitleSize);
 
 		$form->addSlugInput(PageValues::Slug, 'Slug')
 			->setRequired('Please enter slug.');
@@ -133,7 +133,7 @@ class PageControl extends BaseControl
 		$form->addTextInput(PageValues::Description, 'Description for search engines')
 			->setAutocomplete(Autocomplete::Off)
 			->setNullable()
-			->addRule($form::MaxLength, 'The description can have at most %d characters.', 255);
+			->addRule($form::MaxLength, 'The description can have at most %d characters.', PageEntity::ColumnDescriptionSize);
 
 		$form->addTextAreaInput(PageValues::Content, 'Content (Texy)')
 			->setHtmlAttribute('data-texy-toolbar', $this->texyToolbar->getOptions($this->link('preview!')));

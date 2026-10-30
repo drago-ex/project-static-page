@@ -21,6 +21,9 @@ class PageEntity extends Entity
 		StatusDraft = 'draft',
 		StatusPublished = 'published';
 
+	public const int ColumnTitleSize = 255,
+		ColumnDescriptionSize = 255;
+
 	public int $id;
 	public string $slug;
 	public string $title;
