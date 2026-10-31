@@ -34,7 +34,7 @@ class PageEntity extends Entity
 	public string $status;
 
 	/** A published page with $inMenu is in the front menu, ordered by $menuPosition. */
-	public int $inMenu;
+	public bool $inMenu;
 	public int $menuPosition;
 	public \DateTimeInterface $createdAt;
 	public \DateTimeInterface $updatedAt;
