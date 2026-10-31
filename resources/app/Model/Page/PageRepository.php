@@ -4,31 +4,26 @@ namespace App\Model\Page;
 
 use Dibi\Connection;
 use Dibi\Exception;
-use Drago\Attr\AttributeDetectionException;
-use Drago\Attr\Table;
-use Drago\Database\Database;
 use Drago\Database\ExtraFluent;
+use Drago\Database\Table;
 
 
-#[Table(PageEntity::Table, PageEntity::PrimaryKey, entity: PageEntity::class)]
 class PageRepository
 {
-	/** @use Database<PageEntity> */
-	use Database;
+	/** @var Table<PageEntity> */
+	public Table $table;
 
-	public function __construct(
-		private readonly Connection $connection,
-	) {
+
+	public function __construct(Connection $db)
+	{
+		$this->table = new Table($db, PageEntity::Table, PageEntity::PrimaryKey, PageEntity::class);
 	}
 
 
-	/**
-	 * @return ExtraFluent<PageEntity>
-	 * @throws AttributeDetectionException
-	 */
+	/** @return ExtraFluent<PageEntity> */
 	public function getPagesFluent(): ExtraFluent
 	{
-		return $this->read('*')
+		return $this->table->read('*')
 			->orderBy(PageEntity::PrimaryKey, 'DESC');
 	}
 
@@ -36,12 +31,11 @@ class PageRepository
 	/**
 	 * Published pages of the front menu, ordered by their position: slug => title.
 	 * @return array<int|string, string> (an all-digit slug becomes an int key)
-	 * @throws AttributeDetectionException
 	 */
 	public function getMenuPages(): array
 	{
 		/** @var array<int|string, string> */
-		return $this->read('%n, %n', PageEntity::ColumnSlug, PageEntity::ColumnTitle)
+		return $this->table->read('%n, %n', PageEntity::ColumnSlug, PageEntity::ColumnTitle)
 			->where('%n = ?', PageEntity::ColumnStatus, PageEntity::StatusPublished)
 			->where('%n = 1', PageEntity::ColumnInMenu)
 			->orderBy(PageEntity::ColumnMenuPosition, 'ASC')
@@ -50,26 +44,20 @@ class PageRepository
 	}
 
 
-	/**
-	 * @return list<string>
-	 * @throws AttributeDetectionException
-	 */
+	/** @return list<string> */
 	public function getPublishedSlugs(): array
 	{
 		/** @var list<string> */
-		return $this->read(PageEntity::ColumnSlug)
+		return $this->table->read(PageEntity::ColumnSlug)
 			->where('%n = ?', PageEntity::ColumnStatus, PageEntity::StatusPublished)
 			->fetchPairs(null, PageEntity::ColumnSlug);
 	}
 
 
-	/**
-	 * @throws AttributeDetectionException
-	 * @throws Exception
-	 */
+	/** @throws Exception */
 	public function getPublishedBySlug(string $slug): ?PageEntity
 	{
-		return $this->read('*')
+		return $this->table->read('*')
 			->where('%n = ?', PageEntity::ColumnSlug, $slug)
 			->where('%n = ?', PageEntity::ColumnStatus, PageEntity::StatusPublished)
 			->record();

@@ -2,7 +2,6 @@
 
 namespace App\Model\Page;
 
-use Drago\Attr\AttributeDetectionException;
 use Nette\Caching\Cache;
 use Nette\Caching\Storage;
 
@@ -24,7 +23,6 @@ class PageSlugs
 	}
 
 
-	/** @throws AttributeDetectionException */
 	public function isPublished(string $slug): bool
 	{
 		/** @var array<string, true> $slugs */

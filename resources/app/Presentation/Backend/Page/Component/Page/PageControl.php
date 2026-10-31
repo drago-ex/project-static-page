@@ -10,7 +10,6 @@ use App\Presentation\Backend\Page\Component\BaseControl;
 use App\Presentation\Backend\Page\Component\Factory;
 use Dibi\Exception;
 use Drago\Application\UI\Alert;
-use Drago\Attr\AttributeDetectionException;
 use Drago\Datagrid\DataGrid;
 use Drago\Datagrid\Exception\InvalidColumnException;
 use Drago\Datagrid\Exception\InvalidConfigurationException;
@@ -55,13 +54,12 @@ class PageControl extends BaseControl
 
 	/**
 	 * Handles page edit.
-	 * @throws AttributeDetectionException
 	 * @throws Exception
 	 */
 	#[Requires(ajax: true)]
 	public function handleEdit(int $id): void
 	{
-		$item = $this->pageRepository->get($id)->record();
+		$item = $this->pageRepository->table->get($id)->record();
 		if ($item === null) {
 			$this->error();
 		}
@@ -85,7 +83,7 @@ class PageControl extends BaseControl
 
 
 	/**
-	 * @throws AttributeDetectionException|InvalidColumnException
+	 * @throws InvalidColumnException
 	 * @throws InvalidConfigurationException
 	 */
 	protected function createComponentDataGrid(): DataGrid
@@ -166,13 +164,10 @@ class PageControl extends BaseControl
 	}
 
 
-	/**
-	 * @throws AttributeDetectionException
-	 * @throws Exception
-	 */
+	/** @throws Exception */
 	protected function deleteItem(int $id): void
 	{
-		$this->pageRepository
+		$this->pageRepository->table
 			->delete(PageEntity::PrimaryKey, $id)
 			->execute();
 
@@ -181,13 +176,10 @@ class PageControl extends BaseControl
 	}
 
 
-	/**
-	 * @throws AttributeDetectionException
-	 * @throws Exception
-	 */
+	/** @throws Exception */
 	protected function getItemTitle(int $id): ?string
 	{
-		return $this->pageRepository
+		return $this->pageRepository->table
 			->get($id)
 			->record()
 			?->title;
@@ -228,7 +220,7 @@ class PageControl extends BaseControl
 		try {
 			$message = (int) $values->id > 0 ? 'Update successful.' : 'Insert successful.';
 
-			$this->pageRepository->save($values);
+			$this->pageRepository->table->save($values);
 			$this->pageSlugs->clean();
 			$this->pageMenu->clean();
 			$this->addFlashMessage($message, Alert::Success);

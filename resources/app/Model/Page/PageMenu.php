@@ -2,7 +2,6 @@
 
 namespace App\Model\Page;
 
-use Drago\Attr\AttributeDetectionException;
 use Nette\Caching\Cache;
 use Nette\Caching\Storage;
 
@@ -24,10 +23,7 @@ class PageMenu
 	}
 
 
-	/**
-	 * @return array<int|string, string> slug => title (PHP makes an all-digit slug an int key)
-	 * @throws AttributeDetectionException
-	 */
+	/** @return array<int|string, string> slug => title (PHP makes an all-digit slug an int key) */
 	public function getItems(): array
 	{
 		/** @var array<int|string, string> */
