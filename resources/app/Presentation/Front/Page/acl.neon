@@ -1,0 +1,8 @@
+# Everyone may read the published pages.
+security:
+	resources:
+		Front:Page:
+
+	rules:
+		allow:
+			- [guest, Front:Page]

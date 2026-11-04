@@ -35,6 +35,9 @@ Balíček nemá vlastní skripty. Lišta pole s obsahem a tlačítko pro kopíro
 [drago-ex/texy-toolbar](https://github.com/drago-ex/texy-toolbar); nastavte je podle jeho README (`admin.js` pro
 lištu, `front.js` pro tlačítko kopírování). Stránky fungují i bez nich.
 
+Seznam stránek pochází z [drago-ex/datagrid](https://github.com/drago-ex/datagrid); nastavte jeho assety v `admin.js`
+a `admin.scss` podle jeho README.
+
 ## Administrace
 
 Presenter stránek v administraci je dostupný jako:
@@ -43,9 +46,9 @@ Presenter stránek v administraci je dostupný jako:
 {link :Backend:Page:}
 ```
 
-S [drago-ex/project-backend-ui](https://github.com/drago-ex/project-backend-ui) přidejte odkazy do jeho menu (viz jeho README).
+S [drago-ex/project-backend-ui](https://github.com/drago-ex/project-backend-ui) dostane stránka položku menu z `Backend/Page/5.menu.neon`.
 
-Modul používá zdroj oprávnění `Backend:Page`. Zápisové akce se kontrolují privilegiem `pages-write`. Provider administrace povoluje roli administrátora.
+Modul používá zdroj oprávnění `Backend:Page`.
 
 ## Veřejná část
 
@@ -78,60 +81,15 @@ na bezpečné URL; nadpisy obsahu začínají od `<h2>`, protože nadpis stránk
 
 Popis stránky vypíše layout veřejné části z drago-ex/project-front jako `<meta name="description">`.
 
-Provider oprávnění veřejné části používá zdroj `Front:Page` a povoluje ho návštěvníkům.
+Zdroj `Front:Page` je povolený návštěvníkům.
 
----
+## Pravidla přístupu
 
-## Volitelné doplňky
+Pravidla přístupu jsou v `acl.neon` vedle presenterů: `app/Presentation/Backend/Page/acl.neon` (zdroj `Backend:Page` jen pro administrátora)
+a `app/Presentation/Front/Page/acl.neon` (zdroj `Front:Page` pro všechny).
+[drago-ex/permission](https://github.com/drago-ex/permission) je sloučí se svými výchozími rolemi, ve kterých administrátor smí všechno.
 
-Balíček funguje i bez nich. Pokud je projekt potřebuje, nastavte je ručně podle popisu níže.
-
-### Oprávnění
-
-Statické stránky fungují bez oprávnění i bez [drago-ex/permission](https://github.com/drago-ex/permission):
-administrace pak zobrazuje všechna svá tlačítka.
-
-Pro statická oprávnění jsou pravidla přístupu připravená v [`bin/create-page-permission`](bin/create-page-permission); drago-ex/permission
-z nich vygeneruje provider (nastavení popisuje jeho README):
-
-```bash
-php vendor/bin/drago-commands
-```
-
-Aby tlačítka pro přidání, úpravu a mazání viděly jen role s privilegiem, přidejte trait `WriteAccess` z
-drago-ex/permission; jeho `isWriteAllowed()` se ptá na privilegium `{component}-write`. V
-`app/Presentation/Backend/Page/Component/BaseControl.php` trait použijte a výsledek předejte do šablony
-(s `public bool $writeAllowed = false;` v `BaseTemplate`):
-
-```php
-use Drago\Permission\WriteAccess;
-
-abstract class BaseControl extends ExtraControl implements OffcanvasHandle, ModalHandle
-{
-	use Component;
-	use WriteAccess;
-
-	public function createRender(): Template
-	{
-		// ...
-		$template->writeAllowed = $this->isWriteAllowed();
-```
-
-potom podle něj skryjte akce gridu a tlačítko pro přidání zobrazte jen s oprávněním:
-
-```php
-$grid->addActionEdit(fn(int $id) => $this->handleEdit($id))
-	->setVisible($this->isWriteAllowed());
-```
-
-```latte
-{embed '../@datagrid-heading.latte', addButton: $writeAllowed}
-```
-
-Pro dynamická oprávnění nastavovaná v administraci nainstalujte
-[drago-ex/project-permission](https://github.com/drago-ex/project-permission) a ručně naimportujte privilegia administrace stránek
-do jeho tabulky `resources`, aby je bylo možné přidělovat rolím:
-
-```bash
-php vendor/bin/migration db:migrate vendor/drago-ex/project-static-page/migrations-permission
-```
+Privilegia administrace (`Backend:Page`) jsou `default` (stránka), `edit` (přidání a úpravy stránek) a `delete`.
+Její tlačítka se zobrazí jen těm, kdo je smí použít. S
+[drago-ex/project-permission](https://github.com/drago-ex/project-permission) lze tato privilegia přidělit rolím
+v jeho administraci.

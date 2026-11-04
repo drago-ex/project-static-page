@@ -33,9 +33,5 @@
 "Position in the menu": "Pořadí v menu"
 "Please enter the position in the menu.": "Zadejte prosím pořadí v menu."
 
-# privileges for drago-ex/project-permission (migrations-permission)
-"View static pages": "Zobrazit statické stránky"
-"Sort and filter static pages": "Řadit a filtrovat statické stránky"
-"Manage static pages": "Správa statických stránek"
 "The title can have at most %d characters.": "Název může mít nejvýše %d znaků."
 "The position in the menu must be from %d to %d.": "Pozice v menu musí být od %d do %d."

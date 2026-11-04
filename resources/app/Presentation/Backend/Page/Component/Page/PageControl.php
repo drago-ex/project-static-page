@@ -14,6 +14,7 @@ use Drago\Datagrid\DataGrid;
 use Drago\Datagrid\Exception\InvalidColumnException;
 use Drago\Datagrid\Exception\InvalidConfigurationException;
 use Drago\Form\Autocomplete;
+use Drago\Permission\Access;
 use Drago\Texy\TexyToolbar;
 use Nette\Application\Attributes\Requires;
 use Nette\Application\InvalidPresenterException;
@@ -74,7 +75,8 @@ class PageControl extends BaseControl
 	}
 
 
-	/** Returns the HTML of the content for the preview of the Texy toolbar. */
+	/** Returns the HTML of the content for the preview of the Texy toolbar; it only reads, the page is enough. */
+	#[Access]
 	#[Requires(methods: 'POST', ajax: true)]
 	public function handlePreview(): void
 	{
@@ -109,14 +111,17 @@ class PageControl extends BaseControl
 
 		// A click on the row opens the form, the Edit button is then hidden by the grid.
 		$grid->setRowClickAction('edit');
-		$grid->addActionEdit(fn(int $id) => $this->handleEdit($id));
-		$grid->addActionDelete(fn(int $id) => $this->handleDelete($id));
+		$grid->addActionEdit(fn(int $id) => $this->handleEdit($id))
+			->setVisible($this->isAllowed('edit'));
+		$grid->addActionDelete(fn(int $id) => $this->handleDelete($id))
+			->setVisible($this->isAllowed('delete'));
 
 		return $grid;
 	}
 
 
 	/** @throws InvalidLinkException */
+	#[Access('edit')]
 	protected function createComponentPage(): Form
 	{
 		$form = $this->factory->create();

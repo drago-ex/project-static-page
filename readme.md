@@ -35,6 +35,9 @@ The package has no own scripts. The toolbar of the content field and the copy bu
 [drago-ex/texy-toolbar](https://github.com/drago-ex/texy-toolbar); set them up as its README shows (`admin.js` for
 the toolbar, `front.js` for the copy button). Without them the pages work too.
 
+The list of pages comes from [drago-ex/datagrid](https://github.com/drago-ex/datagrid); set up its assets in `admin.js` and
+`admin.scss` as its README shows.
+
 ## Backend
 
 The backend page presenter is available as:
@@ -43,9 +46,9 @@ The backend page presenter is available as:
 {link :Backend:Page:}
 ```
 
-With [drago-ex/project-backend-ui](https://github.com/drago-ex/project-backend-ui), add the links to its menu (see its README).
+With [drago-ex/project-backend-ui](https://github.com/drago-ex/project-backend-ui), the page gets its menu item from `Backend/Page/5.menu.neon`.
 
-The module uses the permission resource `Backend:Page`. Write actions are checked with the `pages-write` privilege. The backend provider allows the administrator role.
+The module uses the permission resource `Backend:Page`.
 
 ## Frontend
 
@@ -78,60 +81,15 @@ to safe URLs; content headings start at `<h2>`, as the page title is the `<h1>`.
 
 The description of a page is printed as `<meta name="description">` by the front layout of drago-ex/project-front.
 
-The frontend permission provider uses the resource `Front:Page` and allows it to guests.
+The resource `Front:Page` is allowed to guests.
 
----
+## Access rules
 
-## Optional add-ons
+The access rules are in `acl.neon` next to the presenters: `app/Presentation/Backend/Page/acl.neon` (the resource `Backend:Page`, for the administrator only)
+and `app/Presentation/Front/Page/acl.neon` (the resource `Front:Page` for everyone).
+[drago-ex/permission](https://github.com/drago-ex/permission) merges them with its base roles, in which the administrator is allowed everything.
 
-The package works without them. Set them up by hand as described below when the project needs them.
-
-### Permissions
-
-Static pages work without permissions and without [drago-ex/permission](https://github.com/drago-ex/permission):
-the administration shows all its buttons.
-
-For static permissions, the access rules are prepared in [`bin/create-page-permission`](bin/create-page-permission); drago-ex/permission
-generates a provider from it (set up as its README shows):
-
-```bash
-php vendor/bin/drago-commands
-```
-
-To show the add, edit and delete buttons only to roles with the privilege, add the `WriteAccess` trait of
-drago-ex/permission; its `isWriteAllowed()` asks for the `{component}-write` privilege. In
-`app/Presentation/Backend/Page/Component/BaseControl.php` use the trait and pass the result to the template
-(with `public bool $writeAllowed = false;` in `BaseTemplate`):
-
-```php
-use Drago\Permission\WriteAccess;
-
-abstract class BaseControl extends ExtraControl implements OffcanvasHandle, ModalHandle
-{
-	use Component;
-	use WriteAccess;
-
-	public function createRender(): Template
-	{
-		// ...
-		$template->writeAllowed = $this->isWriteAllowed();
-```
-
-then hide the grid actions by it and show the add button only when allowed:
-
-```php
-$grid->addActionEdit(fn(int $id) => $this->handleEdit($id))
-	->setVisible($this->isWriteAllowed());
-```
-
-```latte
-{embed '../@datagrid-heading.latte', addButton: $writeAllowed}
-```
-
-For dynamic permissions set in the administration, install
-[drago-ex/project-permission](https://github.com/drago-ex/project-permission) and import the privileges of the page administration
-into its `resources` table by hand, so roles can be given them:
-
-```bash
-php vendor/bin/migration db:migrate vendor/drago-ex/project-static-page/migrations-permission
-```
+The privileges of the administration (`Backend:Page`) are `default` (the page), `edit` (adding and editing pages)
+and `delete`. Its buttons are shown only to those who may use them. With
+[drago-ex/project-permission](https://github.com/drago-ex/project-permission), roles can be given these privileges
+in its administration.
