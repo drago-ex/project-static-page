@@ -1,4 +1,11 @@
 # Everyone may read the published pages.
+parameters:
+	# descriptions for the permissions page of drago-ex/project-permission
+	permissionLabels:
+		Front:Page:
+			default: Published page
+
+
 security:
 	resources:
 		Front:Page:

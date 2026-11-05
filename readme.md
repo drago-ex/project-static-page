@@ -76,3 +76,5 @@ The rules are in `Backend/Page/acl.neon` (resource `Backend:Page`, the administr
 `Front/Page/acl.neon` (resource `Front:Page`, everyone). The privileges of `Backend:Page` are `default`, `edit`
 and `delete`; buttons are shown only to those who may use them.
 [Project Permission](https://github.com/drago-ex/project-permission) gives them to other roles.
+
+The same files describe the privileges (`permissionLabels`) for the permissions page of [Project Permission](https://github.com/drago-ex/project-permission).

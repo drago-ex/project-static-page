@@ -35,3 +35,8 @@
 
 "The title can have at most %d characters.": "Název může mít nejvýše %d znaků."
 "The position in the menu must be from %d to %d.": "Pozice v menu musí být od %d do %d."
+
+# descriptions of the privileges (permissionLabels in acl.neon)
+"Published page": "Zobrazení publikované stránky"
+"Managing pages (adding and editing)": "Správa stránek (přidání a úprava)"
+"Deleting pages": "Mazání stránek"

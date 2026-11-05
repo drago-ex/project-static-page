@@ -1,4 +1,12 @@
 # The page administration; administrators are allowed everything (permission).
+parameters:
+	# descriptions for the permissions page of drago-ex/project-permission
+	permissionLabels:
+		Backend:Page:
+			edit: 'Managing pages (adding and editing)'
+			delete: Deleting pages
+
+
 security:
 	resources:
 		Backend:Page:
