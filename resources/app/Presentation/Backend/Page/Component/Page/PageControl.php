@@ -75,6 +75,29 @@ class PageControl extends BaseControl
 	}
 
 
+	/**
+	 * Publishes a page or takes it back to a draft (the switch of the grid).
+	 * @throws Exception
+	 * @throws InvalidLinkException
+	 */
+	#[Requires(methods: 'POST', ajax: true)]
+	public function handlePublish(int $id, bool $publish = true): void
+	{
+		$this->pageRepository->table->update([PageEntity::ColumnStatus => $publish ? PageEntity::StatusPublished : PageEntity::StatusDraft])
+			->where('%n = ?', PageEntity::PrimaryKey, $id)
+			->execute();
+
+		$this->pageSlugs->clean();
+		$this->pageMenu->clean();
+		$this->addFlashMessage(
+			$publish ? 'The page has been published.' : 'The page has been taken back to a draft.',
+			Alert::Success,
+		);
+		$this->addRedraw($this->snippetMessage);
+		$this['dataGrid']->redrawDataGrid();
+	}
+
+
 	/** Returns the HTML of the content for the preview of the Texy toolbar; it only reads, the page is enough. */
 	#[Access]
 	#[Requires(methods: 'POST', ajax: true)]
@@ -92,6 +115,7 @@ class PageControl extends BaseControl
 	{
 		$grid = new DataGrid;
 		$grid->setTranslator($this->translator);
+		$grid->setFilterMode('inline');
 		$grid->setDataSource($this->pageRepository->getPagesFluent())
 			->setPrimaryKey(PageEntity::PrimaryKey);
 
@@ -101,20 +125,35 @@ class PageControl extends BaseControl
 		$grid->addColumnText(PageEntity::ColumnSlug, 'Slug')
 			->setFilterText();
 
+		// the status is switched right in the grid; without the privilege the switch only shows it
 		$grid->addColumnText(PageEntity::ColumnStatus, 'Status')
+			->setSwitch(
+				'publish',
+				fn(int $id, bool $on) => $this->handlePublish($id, $on),
+				on: PageEntity::StatusPublished,
+				labels: ['Published', 'Draft'],
+				enabled: $this->isAllowed('publish'),
+			)
 			->setFilterSelect([
 				PageEntity::StatusDraft => 'Draft',
 				PageEntity::StatusPublished => 'Published',
 			]);
 
-		$grid->addColumnDate(PageEntity::ColumnUpdatedAt, 'Updated at');
+		$grid->addColumnDate(PageEntity::ColumnUpdatedAt, 'Updated at')
+			->setFilterDate(range: true);
 
-		// A click on the row opens the form, the Edit button is then hidden by the grid.
-		$grid->setRowClickAction('edit');
-		$grid->addActionEdit(fn(int $id) => $this->handleEdit($id))
+		// The actions stand in the bar under the table and work with the rows chosen by their checkboxes
+		// or by a click anywhere on a row; Edit is for one row.
+		$grid->setRowClickAction('select');
+		$grid->addBulkActionEdit(fn(int $id) => $this->handleEdit($id))
 			->setVisible($this->isAllowed('edit'));
-		$grid->addActionDelete(fn(int $id) => $this->handleDelete($id))
+		$grid->addBulkActionExport()
+			->setVisible($this->isAllowed('export'));
+		$grid->addBulkActionDelete(fn(array $ids) => $this->handleDelete($ids))
 			->setVisible($this->isAllowed('delete'));
+
+		// "Export" under the table: all rows of the current filters
+		$grid->setExport('pages.csv', button: $this->isAllowed('export'));
 
 		return $grid;
 	}

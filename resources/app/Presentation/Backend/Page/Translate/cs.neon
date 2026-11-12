@@ -20,6 +20,7 @@
 "Edit page": "Upravit stránku"
 "Confirm delete": "Potvrzení smazání"
 "Are you sure you want to delete the item?": "Opravdu chcete tuto položku smazat?"
+"Are you sure you want to delete the chosen items?": "Opravdu chcete smazat vybrané položky?"
 "Confirm": "Potvrdit"
 "Insert successful.": "Záznam byl úspěšně vytvořen."
 "Update successful.": "Záznam byl úspěšně upraven."
@@ -36,7 +37,13 @@
 "The title can have at most %d characters.": "Název může mít nejvýše %d znaků."
 "The position in the menu must be from %d to %d.": "Pozice v menu musí být od %d do %d."
 
+# the switch of the status in the grid
+"The page has been published.": "Stránka byla publikována."
+"The page has been taken back to a draft.": "Stránka byla vrácena mezi koncepty."
+
 # descriptions of the privileges (permissionLabels in acl.neon)
 "Published page": "Zobrazení publikované stránky"
 "Managing pages (adding and editing)": "Správa stránek (přidání a úprava)"
 "Deleting pages": "Mazání stránek"
+"Publishing pages (and taking them back to drafts)": "Publikování stránek (a jejich vracení mezi koncepty)"
+"Exporting pages to CSV": "Export stránek do CSV"

@@ -5,6 +5,8 @@ parameters:
 		Backend:Page:
 			edit: 'Managing pages (adding and editing)'
 			delete: Deleting pages
+			publish: 'Publishing pages (and taking them back to drafts)'
+			export: Exporting pages to CSV
 
 
 security:
