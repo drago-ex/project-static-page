@@ -76,7 +76,7 @@ class PageControl extends BaseControl
 
 
 	/**
-	 * Publishes a page or takes it back to a draft (the switch of the grid).
+	 * Publishes a page or takes it back to a draft (the menu of the state in the grid).
 	 * @throws Exception
 	 * @throws InvalidLinkException
 	 */
@@ -125,13 +125,15 @@ class PageControl extends BaseControl
 		$grid->addColumnText(PageEntity::ColumnSlug, 'Slug')
 			->setFilterText();
 
-		// the status is switched right in the grid; without the privilege the switch only shows it
+		// the status is a badge that opens a menu of the states; without the privilege it is only read
 		$grid->addColumnText(PageEntity::ColumnStatus, 'Status')
-			->setSwitch(
+			->setState(
 				'publish',
-				fn(int $id, bool $on) => $this->handlePublish($id, $on),
-				on: PageEntity::StatusPublished,
-				labels: ['Published', 'Draft'],
+				fn(int $id, int|string $status) => $this->handlePublish($id, $status === PageEntity::StatusPublished),
+				[
+					PageEntity::StatusPublished => ['Published', 'success'],
+					PageEntity::StatusDraft => ['Draft', 'secondary'],
+				],
 				enabled: $this->isAllowed('publish'),
 			)
 			->setFilterSelect([

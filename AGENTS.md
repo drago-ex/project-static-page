@@ -36,7 +36,7 @@ are in `composer.json`.
 `BaseControl` uses `AccessCheck`; grid actions `setVisible($this->isAllowed(...))`,
 `addButton: $control->isAllowed('edit')` of `@datagrid-heading.latte`. Privileges of `Backend:Page`: `default`;
 `edit` (`createComponentPage`, the bulk action Edit); `delete` (dialog, form, the bulk action Delete); `publish`
-(the switch of the status, both ways); `export` (CSV). `openModal`, `openOffcanvas`, `preview` need only the page
+(the menu of the status badge in the grid, `setState()` of drago-ex/datagrid, both ways); `export` (CSV). `openModal`, `openOffcanvas`, `preview` need only the page
 (`#[Access]`). project-permission reads the privileges from the code.
 
 Every grid has inline filters, no row menu and no row click that opens the form: the actions are bulk actions of drago-ex/datagrid in the bar under the table (Edit, Export, Delete), a click anywhere on a row chooses it (`setRowClickAction('select')`), states are badges that are only read (`setBadges()`). The name of a bulk action is its privilege, and the control has a `handle<Name>()` method the callback calls, so `PrivilegeCatalog` finds the privilege; `export` comes from `DataGrid::handleExport()`. `BaseControl::handleDelete(array $ids)` opens one confirmation for all chosen items (`$deleteTitles`, the hidden field `ids` of the delete form) and `deleteItem()` runs for each. The state (published or draft, `handlePublish(int $id, bool $publish)`) is a switch in its column (`setSwitch()`), not a bulk action. The column "Updated at" has a date range filter.
