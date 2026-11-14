@@ -20,7 +20,8 @@ are in `composer.json`.
 - `PageControl::isReservedSlug()` asks the router and the presenter factory whether `/slug` already leads to
   another presenter and refuses such a slug.
 - `PageMenu` caches the menu pages (`PageRepository::getMenuPages()`, slug => title). The package has no front
-  layout; project-front-ui prints them in its navbar. `PageControl` cleans `PageSlugs` and `PageMenu` after save
+  layout; project-front-ui prints them in its navbar. The page of the website is `article.blog-article` with the text
+  in `blog-content` (the compostrap module `blog`, imported by `front.scss` of project-front-ui). `PageControl` cleans `PageSlugs` and `PageMenu` after save
   and delete.
 - The description is set as `$description`, which the front layout prints as meta description.
 - Content is Texy converted by `Drago\Texy\TexyFormatter` (safe tags, http(s)/mailto links, headings from `<h2>`,
@@ -29,7 +30,7 @@ are in `composer.json`.
   `Drago\Texy\TexyToolbar`.
 - The form fields are listed in `Page.latte`, so a new field must be added there too. The form is a full-screen
   offcanvas with two columns: title and content left (`col-lg-8`), cards right (`col-lg-4`, no headings): status;
-  `in_menu` + `menu_position`; slug + description. Buttons are in a `sticky-bottom` bar. Nothing is hidden in
+  `in_menu` + `menu_position`; slug + description. Buttons are in the `offcanvas-actions` bar of compostrap (the cards are `card border-0 bg-body-tertiary`, without a shadow). Nothing is hidden in
   tabs or accordions, so a field with an error stays visible.
 
 ## Permissions
@@ -39,7 +40,7 @@ are in `composer.json`.
 (the menu of the status badge in the grid, `setState()` of drago-ex/datagrid, both ways); `export` (CSV). `openModal`, `openOffcanvas`, `preview` need only the page
 (`#[Access]`). project-permission reads the privileges from the code.
 
-Every grid has inline filters, no row menu and no row click that opens the form: the actions are bulk actions of drago-ex/datagrid in the bar under the table (Edit, Export, Delete), a click anywhere on a row chooses it (`setRowClickAction('select')`), states are badges that are only read (`setBadges()`). The name of a bulk action is its privilege, and the control has a `handle<Name>()` method the callback calls, so `PrivilegeCatalog` finds the privilege; `export` comes from `DataGrid::handleExport()`. `BaseControl::handleDelete(array $ids)` opens one confirmation for all chosen items (`$deleteTitles`, the hidden field `ids` of the delete form) and `deleteItem()` runs for each. The state (published or draft, `handlePublish(int $id, bool $publish)`) is a switch in its column (`setSwitch()`), not a bulk action. The column "Updated at" has a date range filter.
+Every grid has inline filters, no row menu and no row click that opens the form: the actions are bulk actions of drago-ex/datagrid in the bar under the table (Edit, Export, Delete), a click anywhere on a row chooses it (`setRowClickAction('select')`), states are badges that are only read (`setBadges()`). The name of a bulk action is its privilege, and the control has a `handle<Name>()` method the callback calls, so `PrivilegeCatalog` finds the privilege; `export` comes from `DataGrid::handleExport()`. `BaseControl::handleDelete(array $ids)` opens one confirmation for all chosen items (`$deleteTitles`, the hidden field `ids` of the delete form) and `deleteItem()` runs for each. The state (published or draft, `handlePublish(int $id, bool $publish)`) is changed in its column by the menu of its badge (`setState()`), not by a bulk action. The grid has the columns Title, Status and Updated at (date range filter); the slug is only in the form.
 
 ## Commands
 ```bash

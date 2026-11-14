@@ -122,9 +122,6 @@ class PageControl extends BaseControl
 		$grid->addColumnText(PageEntity::ColumnTitle, 'Title')
 			->setFilterText();
 
-		$grid->addColumnText(PageEntity::ColumnSlug, 'Slug')
-			->setFilterText();
-
 		// the status is a badge that opens a menu of the states; without the privilege it is only read
 		$grid->addColumnText(PageEntity::ColumnStatus, 'Status')
 			->setState(
@@ -141,7 +138,7 @@ class PageControl extends BaseControl
 				PageEntity::StatusPublished => 'Published',
 			]);
 
-		$grid->addColumnDate(PageEntity::ColumnUpdatedAt, 'Updated at')
+		$grid->addColumnDate(PageEntity::ColumnUpdatedAt, 'Updated at', format: 'j. n. Y H:i')
 			->setFilterDate(range: true);
 
 		// The actions stand in the bar under the table and work with the rows chosen by their checkboxes

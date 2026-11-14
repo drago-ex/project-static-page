@@ -14,14 +14,14 @@
 							{* the height follows the window, so the whole form fits without scrolling the page *}
 							<div class="col-12 form-error">
 								{label content, class => 'form-label fw-semibold' /}
-								{input content, class => 'form-control', style => 'height: calc(100vh - 22rem); min-height: 14rem'}
+								{input content, class => 'form-control', style => 'height: calc(100dvh - 22rem); min-height: 14rem'}
 							</div>
 						</div>
 					</div>
 
 					<div class="col-lg-4">
 						<div class="vstack gap-3">
-							<section class="card border-0 shadow-sm bg-body-tertiary">
+							<section class="card border-0 bg-body-tertiary">
 								<div class="card-body">
 									<div class="row g-3">
 										{include input, type: 'select', name: 'status'}
@@ -29,7 +29,7 @@
 								</div>
 							</section>
 
-							<section class="card border-0 shadow-sm bg-body-tertiary">
+							<section class="card border-0 bg-body-tertiary">
 								<div class="card-body">
 									<div class="row g-3">
 										{include checkbox, name: 'inMenu', switch: true}
@@ -38,7 +38,7 @@
 								</div>
 							</section>
 
-							<section class="card border-0 shadow-sm bg-body-tertiary">
+							<section class="card border-0 bg-body-tertiary">
 								<div class="card-body">
 									<div class="row g-3">
 										{include input, name: 'slug'}
@@ -49,8 +49,8 @@
 						</div>
 					</div>
 
-					{* moved down by the padding of the offcanvas body, so no content shows below the bar *}
-					<div class="col-12 sticky-bottom bg-body pt-3 d-flex justify-content-end gap-2" style="bottom: calc(-1 * var(--bs-offcanvas-padding-y)); padding-bottom: calc(1rem + var(--bs-offcanvas-padding-y))">
+					{* the buttons stay at the bottom of the offcanvas while the form scrolls (offcanvas-actions of compostrap) *}
+					<div class="col-12 offcanvas-actions">
 						{include buttonDismiss, type: 'offcanvas'}
 						{include submit, name: 'send'}
 					</div>
