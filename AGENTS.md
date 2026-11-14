@@ -36,11 +36,11 @@ are in `composer.json`.
 ## Permissions
 `BaseControl` uses `AccessCheck`; grid actions `setVisible($this->isAllowed(...))`,
 `addButton: $control->isAllowed('edit')` of `@datagrid-heading.latte`. Privileges of `Backend:Page`: `default`;
-`edit` (`createComponentPage`, the bulk action Edit); `delete` (dialog, form, the bulk action Delete); `publish`
+`edit` (`createComponentPage`, the Edit of the row menu); `delete` (dialog, form, the Delete of the row menu and of the bar); `publish`
 (the menu of the status badge in the grid, `setState()` of drago-ex/datagrid, both ways); `export` (CSV). `openModal`, `openOffcanvas`, `preview` need only the page
 (`#[Access]`). project-permission reads the privileges from the code.
 
-Every grid has inline filters, no row menu and no row click that opens the form: the actions are bulk actions of drago-ex/datagrid in the bar under the table (Edit, Export, Delete), a click anywhere on a row chooses it (`setRowClickAction('select')`), states are badges that are only read (`setBadges()`). The name of a bulk action is its privilege, and the control has a `handle<Name>()` method the callback calls, so `PrivilegeCatalog` finds the privilege; `export` comes from `DataGrid::handleExport()`. `BaseControl::handleDelete(array $ids)` opens one confirmation for all chosen items (`$deleteTitles`, the hidden field `ids` of the delete form) and `deleteItem()` runs for each. The state (published or draft, `handlePublish(int $id, bool $publish)`) is changed in its column by the menu of its badge (`setState()`), not by a bulk action. The grid has the columns Title, Status and Updated at (date range filter); the slug is only in the form.
+Every grid has inline filters and no row click that opens the form: a row has a menu of three dots (row actions of drago-ex/datagrid, `addActionEdit()` and `addActionDelete()`, the latter calls `handleDelete([$id])`), the bar under the table has the bulk actions (Export, Delete), a click anywhere on a row chooses it (`setRowClickAction('select')`), states are badges that are only read (`setBadges()`). The name of a row or bulk action is its privilege, and the control has a `handle<Name>()` method the callback calls, so `PrivilegeCatalog` finds the privilege; `export` comes from `DataGrid::handleExport()`. `BaseControl::handleDelete(array $ids)` opens one confirmation for all chosen items (`$deleteTitles`, the hidden field `ids` of the delete form) and `deleteItem()` runs for each. The state (published or draft, `handlePublish(int $id, bool $publish)`) is changed in its column by the menu of its badge (`setState()`), not by a bulk action. The grid has the columns Title, Updated at (date range filter) and Status last; the slug is only in the form.
 
 ## Commands
 ```bash

@@ -122,7 +122,10 @@ class PageControl extends BaseControl
 		$grid->addColumnText(PageEntity::ColumnTitle, 'Title')
 			->setFilterText();
 
-		// the status is a badge that opens a menu of the states; without the privilege it is only read
+		$grid->addColumnDate(PageEntity::ColumnUpdatedAt, 'Updated at', format: 'j. n. Y H:i')
+			->setFilterDate(range: true);
+
+		// the status is last, as in every grid: a badge with a menu of the states, only read without the privilege
 		$grid->addColumnText(PageEntity::ColumnStatus, 'Status')
 			->setState(
 				'publish',
@@ -138,14 +141,13 @@ class PageControl extends BaseControl
 				PageEntity::StatusPublished => 'Published',
 			]);
 
-		$grid->addColumnDate(PageEntity::ColumnUpdatedAt, 'Updated at', format: 'j. n. Y H:i')
-			->setFilterDate(range: true);
-
-		// The actions stand in the bar under the table and work with the rows chosen by their checkboxes
-		// or by a click anywhere on a row; Edit is for one row.
-		$grid->setRowClickAction('select');
-		$grid->addBulkActionEdit(fn(int $id) => $this->handleEdit($id))
+		// A row has a menu of three dots with Edit and Delete of that row; the bar under the table works with the rows
+		// chosen by their checkboxes or by a click anywhere on a row.
+		$grid->addActionEdit(fn(int $id) => $this->handleEdit($id))
 			->setVisible($this->isAllowed('edit'));
+		$grid->addActionDelete(fn(int $id) => $this->handleDelete([$id]))
+			->setVisible($this->isAllowed('delete'));
+		$grid->setRowClickAction('select');
 		$grid->addBulkActionExport()
 			->setVisible($this->isAllowed('export'));
 		$grid->addBulkActionDelete(fn(array $ids) => $this->handleDelete($ids))
