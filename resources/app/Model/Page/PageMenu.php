@@ -4,6 +4,7 @@ namespace App\Model\Page;
 
 use Nette\Caching\Cache;
 use Nette\Caching\Storage;
+use Throwable;
 
 
 /**
@@ -23,7 +24,10 @@ class PageMenu
 	}
 
 
-	/** @return array<int|string, string> slug => title (PHP makes an all-digit slug an int key) */
+	/**
+	 * @return array<int|string, string> slug => title (PHP makes an all-digit slug an int key)
+	 * @throws Throwable
+	 */
 	public function getItems(): array
 	{
 		/** @var array<int|string, string> */

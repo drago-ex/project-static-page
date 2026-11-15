@@ -4,6 +4,7 @@ namespace App\Model\Page;
 
 use Nette\Caching\Cache;
 use Nette\Caching\Storage;
+use Throwable;
 
 
 /**
@@ -23,6 +24,7 @@ class PageSlugs
 	}
 
 
+	/** @throws Throwable */
 	public function isPublished(string $slug): bool
 	{
 		/** @var array<string, true> $slugs */
