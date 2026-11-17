@@ -21,7 +21,7 @@ are in `composer.json`.
   another presenter and refuses such a slug.
 - `PageMenu` caches the menu pages (`PageRepository::getMenuPages()`, slug => title). The package has no front
   layout; project-front-ui prints them in its navbar. The page of the website is `article.blog-article` with the text
-  in `blog-content` (the compostrap module `blog`, imported by `front.scss` of project-front-ui). `PageControl` cleans `PageSlugs` and `PageMenu` after save
+  in `blog-content` (the compostrap module `blog`, imported by `front.scss` of project-front-ui; without it the project imports it, README Assets). `PageControl` cleans `PageSlugs` and `PageMenu` after save
   and delete.
 - The description is set as `$description`, which the front layout prints as meta description.
 - Content is Texy converted by `Drago\Texy\TexyFormatter` (safe tags, http(s)/mailto links, headings from `<h2>`,

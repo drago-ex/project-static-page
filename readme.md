@@ -9,6 +9,7 @@ website menu, written in the administration.
 ## Requirements
 
 - PHP >= 8.3, < 9
+- MySQL or MariaDB
 - [Drago Project](https://github.com/drago-ex/project)
 
 ## Installation
@@ -18,12 +19,17 @@ composer require drago-ex/project-static-page
 ```
 
 [Project Tools](https://github.com/drago-ex/project-tools) copies the files of the package into the project,
-where you adapt them.
+where you adapt them. Set up what [Assets](#assets) lists and build the assets again (`npm run vite:build`).
 
 ## Database
 
-The migration creates the table `static_page`; run it with `bin/project-setup` of Drago Project or
-`php vendor/bin/migration db:migrate --packages`.
+The migration creates the table `static_page`, empty:
+
+```bash
+php vendor/bin/migration db:migrate --packages
+```
+
+Pages are then written in the administration. `bin/project-setup` of Drago Project runs the migration for you.
 
 ## Assets
 
@@ -32,6 +38,14 @@ The package has no scripts of its own. It uses:
 - [drago-ex/datagrid](https://github.com/drago-ex/datagrid): the list of pages, set up in `admin.js` and `admin.scss`.
 - [drago-ex/texy-toolbar](https://github.com/drago-ex/texy-toolbar): the toolbar of the content field (`admin.js`)
   and the copy button of code blocks (`front.js`).
+
+A page on the website is in the look of the module `blog` of [compostrap](https://github.com/compostrap/compostrap)
+(the article and its content). [Front UI](https://github.com/drago-ex/project-front-ui) already imports it; otherwise
+import it in `assets/front.scss`:
+
+```scss
+@import 'compostrap/src/scss/blog';
+```
 
 ## Administration
 
